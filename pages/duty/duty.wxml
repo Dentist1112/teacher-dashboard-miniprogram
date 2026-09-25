@@ -1,0 +1,114 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <view class="card header">
+    <view wx:if="{{view === 'day'}}" class="back-btn" bindtap="onBackToWeek">‹ 周表</view>
+    <view class="header-title">
+      <view class="title">{{view === 'day' ? dayLabel + ' 值日' : '值日表'}}</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="save-btn {{dirtyFlag ? '' : 'save-idle'}}" bindtap="onSave">
+      {{saving ? '保存中…' : (dirtyFlag ? '保存' : '已同步')}}
+    </view>
+  </view>
+
+  <!-- ================= 周表 ================= -->
+  <block wx:if="{{view === 'week'}}">
+    <view class="card summary">
+      <view class="sum-item">
+        <text class="sum-num">{{overview.assigned}}</text>
+        <text class="muted">已排人次</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-miss">{{overview.missing}}</text>
+        <text class="muted">未排到</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num">{{overview.minTimes}}~{{overview.maxTimes}}</text>
+        <text class="muted">人均次数</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num">{{overview.slots}}</text>
+        <text class="muted">岗位数</text>
+      </view>
+    </view>
+
+    <view class="card tool-card">
+      <view class="tool-btns">
+        <view class="tool-btn" bindtap="onRotate">按学号轮排</view>
+        <view class="tool-btn" bindtap="onShuffleRotate">随机轮排</view>
+        <view class="tool-btn tool-danger" bindtap="onClearAll">全部清空</view>
+      </view>
+      <view class="tip">点某一天进入编排：先挑学生，再点岗位。点已排的人可移除。改完记得点右上「保存」。</view>
+    </view>
+
+    <view wx:if="{{missingList.length}}" class="card miss-card">
+      <view class="card-title miss-title">⚠ 本周没排到值日（{{missingList.length}} 人）</view>
+      <view class="chip-wrap">
+        <view class="chip chip-miss" wx:for="{{missingList}}" wx:key="_id">
+          {{item.name}} <text class="chip-no">{{item.studentNo}}</text>
+        </view>
+      </view>
+    </view>
+
+    <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+    <block wx:else>
+      <view class="card day-card {{day.isToday ? 'day-today' : ''}}"
+            wx:for="{{week}}" wx:for-item="day" wx:key="d"
+            data-d="{{day.d}}" bindtap="onOpenDay">
+        <view class="day-head">
+          <text class="day-label">{{day.label}}</text>
+          <text class="day-date">{{day.dateLabel}}</text>
+          <text wx:if="{{day.isToday}}" class="today-flag">今天</text>
+          <text class="muted day-total">{{day.total}} 人次</text>
+        </view>
+        <view class="job-line" wx:for="{{day.jobs}}" wx:for-item="j" wx:key="job">
+          <text class="job-tag job-{{j.jcls}}">{{j.job}}</text>
+          <view wx:if="{{j.count}}" class="job-people">
+            <text class="person" wx:for="{{j.people}}" wx:for-item="p" wx:key="_id">{{p.name}}</text>
+          </view>
+          <text wx:else class="job-empty">未安排</text>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ================= 单日编排 ================= -->
+  <block wx:else>
+    <view wx:if="{{pickedId}}" class="card picked-bar">
+      已挑中 <text class="picked-name">{{pickedName}}</text>，点下面某个岗位把他/她排进去。
+    </view>
+
+    <view class="card">
+      <view class="card-title">岗位安排</view>
+      <view class="slot" wx:for="{{dayJobs}}" wx:for-item="j" wx:key="job">
+        <view class="slot-head" data-job="{{j.job}}" bindtap="onAssignJob">
+          <text class="job-tag job-{{j.jcls}}">{{j.job}}</text>
+          <text class="muted">{{j.count}} 人 · 点这里加入</text>
+        </view>
+        <view wx:if="{{j.count}}" class="chip-wrap">
+          <view class="chip chip-on-duty" wx:for="{{j.people}}" wx:for-item="p" wx:key="_id"
+                data-job="{{j.job}}" data-id="{{p._id}}" bindtap="onRemovePerson">
+            {{p.name}} <text class="chip-x">×</text>
+          </view>
+        </view>
+        <view wx:else class="muted slot-empty">还没人，挑个学生点上面的岗位</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">全班（按本周值日次数排序）</view>
+      <view class="chip-wrap">
+        <view class="chip {{pickedId === item._id ? 'chip-sel' : ''}} {{item.busy ? 'chip-busy' : ''}} {{item.times === 0 ? 'chip-zero' : ''}}"
+              wx:for="{{pool}}" wx:key="_id" data-id="{{item._id}}" bindtap="onPickStudent">
+          {{item.name}} <text class="chip-no">{{item.times}}次</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

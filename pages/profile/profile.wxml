@@ -1,0 +1,261 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <!-- ================= 名册 ================= -->
+  <block wx:if="{{view === 'list'}}">
+    <view class="card header">
+      <view class="header-title">
+        <view class="title">学生档案</view>
+        <view class="muted">{{classTitle}}</view>
+      </view>
+    </view>
+
+    <view class="card summary">
+      <view class="sum-item">
+        <text class="sum-num">{{overview.total}}</text>
+        <text class="muted">在册</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-risk">{{overview.riskCount}}</text>
+        <text class="muted">健康关注</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-watch">{{overview.watchCount}}</text>
+        <text class="muted">需关注</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-miss">{{overview.noPhone}}</text>
+        <text class="muted">缺电话</text>
+      </view>
+    </view>
+
+    <view class="card search-card">
+      <input class="search-input" type="text" value="{{keyword}}" bindinput="onSearch"
+             placeholder="搜姓名 / 学号 / 手机号" confirm-type="search" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="onClearSearch">清空</text>
+    </view>
+
+    <view class="card filter-bar">
+      <view class="filter-btn {{filter === 'all' ? 'active' : ''}}" data-f="all" bindtap="onFilter">全部</view>
+      <view class="filter-btn {{filter === 'risk' ? 'active' : ''}}" data-f="risk" bindtap="onFilter">健康关注</view>
+      <view class="filter-btn {{filter === 'watch' ? 'active' : ''}}" data-f="watch" bindtap="onFilter">需关注</view>
+      <view class="filter-btn {{filter === 'nodata' ? 'active' : ''}}" data-f="nodata" bindtap="onFilter">资料不全</view>
+    </view>
+
+    <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+    <block wx:elif="{{shown.length}}">
+      <view class="card stu" wx:for="{{shown}}" wx:key="_id" data-id="{{item._id}}" bindtap="onOpenDetail">
+        <view class="stu-head">
+          <text class="stu-no">{{item.studentNo}}</text>
+          <text class="stu-name">{{item.name}}</text>
+          <text class="gtag gtag-{{item.gcls}}">{{item.gender}}</text>
+          <text wx:if="{{item.risk}}" class="risk-flag">健康关注</text>
+          <text wx:if="{{item.missing > 0}}" class="miss-flag">缺 {{item.missing}} 项</text>
+        </view>
+        <view class="stu-line">
+          <text class="lbl">家长</text>
+          <text class="val {{item.phone ? '' : 'val-empty'}}">{{item.parent || '未登记'}}</text>
+        </view>
+        <view class="stu-line">
+          <text class="lbl">健康</text>
+          <text class="val {{item.risk ? 'val-risk' : ''}} {{item.health ? '' : 'val-empty'}}">{{item.health || '未登记'}}</text>
+        </view>
+        <view wx:if="{{item.tagChips.length}}" class="chip-row">
+          <text wx:for="{{item.tagChips}}" wx:for-item="c" wx:key="text" class="chip chip-{{c.cls}}">{{c.text}}</text>
+        </view>
+      </view>
+    </block>
+
+    <template is="gmEmpty" wx:else data="{{ show: true, title: keyword ? '没搜到匹配的学生' : '该分类下暂无学生', desc: keyword ? '换个关键词试试' : '切换分类或清空搜索' }}"/>
+  </block>
+
+  <!-- ================= 单人档案 ================= -->
+  <block wx:else>
+    <view class="card header">
+      <view class="back-btn" bindtap="onBackToList">‹ 返回</view>
+      <view class="header-title">
+        <view class="title">{{current.name}}</view>
+        <view class="muted">{{current.studentNo}}　{{current.gender}}　{{classTitle}}</view>
+      </view>
+      <view class="edit-btn" bindtap="onEditProfile">编辑</view>
+    </view>
+
+    <!-- 健康提示置顶：这是班主任最要紧的信息 -->
+    <view wx:if="{{current.risk}}" class="card risk-card">
+      <view class="risk-title">⚠ 健康需注意</view>
+      <view class="risk-body">{{current.health}}</view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">基本信息</view>
+      <view class="info-row">
+        <text class="lbl">出生日期</text>
+        <text class="val {{current.birth ? '' : 'val-empty'}}">{{current.birth || '未登记'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="lbl">健康状况</text>
+        <text class="val {{current.risk ? 'val-risk' : ''}} {{current.health ? '' : 'val-empty'}}">{{current.health || '未登记'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="lbl">家长</text>
+        <text class="val {{current.parent ? '' : 'val-empty'}}">{{current.parent || '未登记'}}</text>
+      </view>
+      <view wx:if="{{current.tagChips.length}}" class="info-row info-col">
+        <text class="lbl">标签</text>
+        <view class="chip-row">
+          <text wx:for="{{current.tagChips}}" wx:for-item="c" wx:key="text" class="chip chip-{{c.cls}}">{{c.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card contact-card">
+      <view class="contact-phone {{current.phone ? '' : 'val-empty'}}">{{current.phone || '未登记手机号'}}</view>
+      <view class="contact-acts">
+        <view class="cbtn cbtn-call" bindtap="onCallParent">拨号</view>
+        <view class="cbtn cbtn-copy" bindtap="onCopyPhone">复制</view>
+      </view>
+    </view>
+
+    <!-- 聚合数据 -->
+    <view wx:if="{{stats}}" class="card stat-card">
+      <view class="stat-item"><text class="stat-num">{{stats.attAbnormal}}</text><text class="muted">考勤异常</text></view>
+      <view class="stat-item"><text class="stat-num">{{stats.netPoints}}</text><text class="muted">净积分</text></view>
+      <view class="stat-item"><text class="stat-num">{{stats.avgPct}}</text><text class="muted">平均得分率</text></view>
+      <view class="stat-item"><text class="stat-num">{{stats.hwDone}}/{{stats.hwTotal}}</text><text class="muted">作业已交</text></view>
+    </view>
+    <view wx:else class="card muted center-tip">统计加载中…</view>
+
+    <!-- 成绩综合分析：最近一次考试的跨学科总览、班级排名、强弱科、与上次对比 -->
+    <view wx:if="{{stats && stats.scoreAnalysis}}" class="card score-analysis">
+      <view class="card-title f-happy">📈 成绩综合分析 · {{stats.scoreAnalysis.exam}}</view>
+
+      <view class="sa-top">
+        <view class="sa-rank">
+          <text class="sa-rank-num">{{stats.scoreAnalysis.rank}}</text>
+          <text class="sa-rank-of">/ {{stats.scoreAnalysis.classSize}} 名</text>
+        </view>
+        <view class="sa-kpis">
+          <view class="sa-kpi">
+            <text class="sa-kpi-v">{{stats.scoreAnalysis.avgPct === null ? '—' : stats.scoreAnalysis.avgPct}}</text>
+            <text class="muted">平均得分率%</text>
+          </view>
+          <view class="sa-kpi" wx:if="{{stats.scoreAnalysis.total !== null}}">
+            <text class="sa-kpi-v">{{stats.scoreAnalysis.total}}/{{stats.scoreAnalysis.totalFull}}</text>
+            <text class="muted">总分</text>
+          </view>
+          <view class="sa-kpi" wx:if="{{stats.scoreAnalysis.delta !== null}}">
+            <text class="sa-kpi-v {{stats.scoreAnalysis.delta > 0 ? 'up' : (stats.scoreAnalysis.delta < 0 ? 'down' : '')}}">{{stats.scoreAnalysis.delta > 0 ? '↑' : (stats.scoreAnalysis.delta < 0 ? '↓' : '—')}}{{stats.scoreAnalysis.delta > 0 ? stats.scoreAnalysis.delta : (stats.scoreAnalysis.delta < 0 ? -stats.scoreAnalysis.delta : '')}}</text>
+            <text class="muted">较{{stats.scoreAnalysis.prevExam}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="sa-sw">
+        <view wx:if="{{stats.scoreAnalysis.strongest}}" class="sa-tag strong">
+          最强：{{stats.scoreAnalysis.strongest.subject}} {{stats.scoreAnalysis.strongest.pct}}%
+        </view>
+        <view wx:if="{{stats.scoreAnalysis.weakest}}" class="sa-tag weak">
+          薄弱：{{stats.scoreAnalysis.weakest.subject}} {{stats.scoreAnalysis.weakest.pct}}%
+        </view>
+      </view>
+
+      <view class="sa-sub-head">
+        <text>各科明细</text>
+        <text class="muted">分数 / 班级平均得分率</text>
+      </view>
+      <view class="sa-sub-row" wx:for="{{stats.scoreAnalysis.subjects}}" wx:key="subject">
+        <text class="sa-sub-name">{{item.subject}}</text>
+        <text class="sa-sub-score">{{item.score}}/{{item.full}}</text>
+        <view class="sa-bar"><view class="sa-bar-in" style="width:{{item.pct}}%"></view></view>
+        <text class="sa-sub-pct">{{item.pct}}%</text>
+        <text class="sa-sub-avg muted">班{{item.classAvgPct === null ? '—' : item.classAvgPct}}</text>
+      </view>
+      <view wx:if="{{stats.scoreAnalysis.total === null}}" class="muted sa-note">各科满分不一致，已按得分率排名，不直接相加原始分。</view>
+    </view>
+
+    <!-- v0.9.6 个人成绩全景：行=考试（新→旧最多 6 次），列=科目，格内为每百得分，长按看原始分 -->
+    <view wx:if="{{stats && stats.scorePanorama}}" class="card pano-card">
+      <view class="card-title f-happy">🗂️ 成绩全景</view>
+      <view class="muted pano-hint">格内为每百得分 · 缺考为 — · 长按格子看原始分</view>
+      <scroll-view scroll-x class="pano-scroll" enhanced show-scrollbar="{{false}}">
+        <view class="pano-table">
+          <view class="pn-row pn-head">
+            <view class="pn-exam">考试</view>
+            <view class="pn-cell" wx:for="{{stats.scorePanorama.subjects}}" wx:for-item="sj" wx:key="*this">{{sj}}</view>
+            <view class="pn-cell pn-avg-head">均</view>
+          </view>
+          <view class="pn-row" wx:for="{{stats.scorePanorama.rows}}" wx:for-item="r" wx:key="exam">
+            <view class="pn-exam">{{r.exam}}</view>
+            <view class="pn-cell pn-lv{{c.cls}}" wx:for="{{r.cells}}" wx:for-item="c" wx:key="index"
+                  data-tip="{{c.tip}}" catchlongpress="onPanoCell">{{c.text}}</view>
+            <view class="pn-cell pn-avg">{{r.avg}}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view wx:if="{{stats && stats.attRecent.length}}" class="card">
+      <view class="card-title">最近考勤异常</view>
+      <view class="line-item" wx:for="{{stats.attRecent}}" wx:key="date">
+        <text>{{item.date}}</text>
+        <text class="badge badge-warn">{{item.status}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{stats && stats.rewRecent.length}}" class="card">
+      <view class="card-title">最近奖惩</view>
+      <view class="line-item" wx:for="{{stats.rewRecent}}" wx:key="date">
+        <view class="rew-main">
+          <text class="rew-reason">{{item.reason}}</text>
+          <text class="muted">{{item.date}}</text>
+        </view>
+        <text class="points points-{{item.pcls}}">{{item.pointsText}}</text>
+      </view>
+    </view>
+  </block>
+</view>
+
+<!-- ================= 编辑表单 ================= -->
+<view wx:if="{{showForm}}" class="mask" catchtap="onFormCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">编辑 {{form.name}} 的档案</view>
+
+    <view class="field">
+      <view class="field-label">出生</view>
+      <picker class="field-picker" mode="date" value="{{form.birth}}" start="2000-01-01" bindchange="onBirthChange">
+        <view class="picker-text {{form.birth ? '' : 'val-empty'}}">{{form.birth || '请选择'}}</view>
+      </picker>
+    </view>
+
+    <view class="field field-col">
+      <view class="field-label">家长</view>
+      <input class="field-input full" type="text" value="{{form.parent}}" data-field="parent"
+             bindinput="onFormInput" placeholder="如 母亲 王女士 13812345678" maxlength="50" />
+    </view>
+
+    <view class="field field-col">
+      <view class="field-label">健康</view>
+      <textarea class="field-textarea" value="{{form.health}}" data-field="health"
+                bindinput="onFormInput" placeholder="如 花生过敏，随身备氯雷他定" auto-height maxlength="200"></textarea>
+    </view>
+
+    <view class="field field-col">
+      <view class="field-label">标签</view>
+      <view class="tag-picker">
+        <text wx:for="{{tags}}" wx:key="*this"
+              class="tag-opt {{form.tagSet.indexOf(item) >= 0 ? 'on' : ''}}"
+              data-tag="{{item}}" bindtap="onToggleTag">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onFormCancel">取消</view>
+      <view class="btn-save {{saving ? 'disabled' : ''}}" bindtap="onFormSave">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+  </view>
+</view>

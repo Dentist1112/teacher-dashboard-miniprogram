@@ -1,0 +1,43 @@
+<!-- ==========================================================================
+ * 公共模板：空状态 / 加载骨架 / 区块标题 / 纹样分割
+ * 用法（页面 wxml 顶部写一次）：
+ *   <import src="/templates/gm.wxml"/>
+ * 然后：
+ *   <template is="gmEmpty" data="{{ title: '还没有学生', desc: '点右上角新增' }}"/>
+ *   <template is="gmSkeleton" data="{{ loading: loading, lines: 4 }}"/>
+ * ========================================================================== -->
+
+<!-- 空状态：数据为空时展示（原来项目里完全缺失，数据慢或没数据时页面一片空白） -->
+<template name="gmEmpty">
+  <view class="gm-empty" wx:if="{{show}}">
+    <view class="gm-empty-mark"></view>
+    <view class="gm-empty-title">{{title || '暂无数据'}}</view>
+    <view class="gm-empty-desc" wx:if="{{desc}}">{{desc}}</view>
+    <slot></slot>
+  </view>
+</template>
+
+<!-- 加载骨架：代替白屏，只跑 opacity 动画，小屏不卡 -->
+<template name="gmSkeleton">
+  <view class="gm-skl" wx:if="{{loading}}" style="padding: 32rpx;">
+    <view class="gm-skl-line w40"></view>
+    <view class="gm-skl-line w80"></view>
+    <view class="gm-skl-line w60"></view>
+    <view class="gm-skl-line w80" wx:if="{{lines > 3}}"></view>
+    <view class="gm-skl-line w40" wx:if="{{lines > 4}}"></view>
+  </view>
+</template>
+
+<!-- 区块标题：左侧朱红细条 + 标题 + 右侧可选操作 -->
+<template name="gmSectionTitle">
+  <view class="gm-sec">
+    <view class="gm-sec-bar"></view>
+    <text class="gm-sec-t">{{text}}</text>
+    <text class="gm-sec-x" wx:if="{{extra}}">{{extra}}</text>
+  </view>
+</template>
+
+<!-- 纹样分割：波纹 -->
+<template name="gmDivider">
+  <view class="div-nami"></view>
+</template>

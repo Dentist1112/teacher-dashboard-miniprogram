@@ -1,0 +1,41 @@
+<view class="container login-page">
+  <view class="brand">
+    <image class="mogu-img-lg mogu-bob" src="/assets/img/mogu.png" mode="aspectFit"/>
+    <view class="title f-happy brand-title">蘑菇老师</view>
+    <view class="muted">班主任工作台</view>
+  </view>
+
+  <view class="card card-accent login-card">
+    <view class="card-title">设置你的身份</view>
+    <view class="muted login-tip">头像和昵称只显示在本机与你自己的云空间，不会发给任何人。班级数据按微信号隔离，换设备登录同一个微信号即可看到同一份数据。</view>
+
+    <view class="avatar-row">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatar}}" class="avatar-img" src="{{avatar}}" mode="aspectFill"/>
+        <view wx:else class="avatar-ph">＋</view>
+      </button>
+      <view class="avatar-hint">
+        <text class="avatar-hint-t">{{avatar ? '头像已选择' : '点击选择微信头像'}}</text>
+        <text class="tiny">不选也可以，之后在「设置」里能补</text>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">昵称</view>
+      <input class="field-input" type="nickname" value="{{nickName}}" bindinput="onNickInput"
+             bindblur="onNickInput" placeholder="点这里可选「使用微信昵称」" maxlength="20" />
+    </view>
+
+    <view class="login-actions" style="{{kbH ? 'padding-bottom:' + (kbH + 16) + 'px' : ''}}">
+      <view class="btn btn-login {{saving ? 'disabled' : ''}}" bindtap="onConfirm">{{saving ? '保存中…' : '进入工作台'}}</view>
+      <view class="link-skip" bindtap="onSkip">暂不设置，直接使用</view>
+    </view>
+  </view>
+
+  <view class="card login-why">
+    <view class="card-title">为什么要这一步</view>
+    <view class="why-line"><text class="why-ic">🔒</text><text class="why-tx">数据按微信号隔离，别人拿不到你的班级数据</text></view>
+    <view class="why-line"><text class="why-ic">📱</text><text class="why-tx">手机和电脑登录同一个微信号，数据自动同步</text></view>
+    <view class="why-line"><text class="why-ic">✍️</text><text class="why-tx">通知和作业会署上你的名字，家长一眼知道是谁发的</text></view>
+  </view>
+</view>

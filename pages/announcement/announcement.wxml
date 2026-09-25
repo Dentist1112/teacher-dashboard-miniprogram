@@ -1,0 +1,76 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，通知为空且无法发布。配置真实 AppID + 云环境后自动生效。
+  </view>
+  <view class="card header">
+    <view class="header-title">
+      <view class="title">通知公告</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="add-btn" bindtap="onAdd">+ 发布通知</view>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:elif="{{notices.length}}">
+    <!-- 变长文本（L4）：列表里截断到 2 行 + 点一下展开全文，不再起新详情页（内容 ≤500 字，原地展开更顺） -->
+    <view class="card notice" wx:for="{{notices}}" wx:key="_id">
+      <view class="notice-head">
+        <view class="badge badge-{{item.pcls}}">{{item.priority}}</view>
+        <view class="notice-title">{{item.title}}</view>
+        <view class="act del" data-id="{{item._id}}" catchtap="onDelete">删除</view>
+      </view>
+      <view class="notice-content {{expandedId === item._id ? '' : 'clamp'}}"
+            data-id="{{item._id}}" bindtap="onToggleExpand">{{item.content}}</view>
+      <view class="notice-foot">
+        <text class="muted">{{item.date}}</text>
+        <text wx:if="{{item.content && item.content.length > 36}}" class="expand-hint"
+              data-id="{{item._id}}" catchtap="onToggleExpand">
+          {{expandedId === item._id ? '收起 ⌃' : '展开全文 ⌄'}}
+        </text>
+      </view>
+    </view>
+  </block>
+
+  <template is="gmEmpty" wx:else data="{{ show: true, title: '暂无通知', desc: '点右上角 + 即可发布第一条' }}"/>
+</view>
+
+<view wx:if="{{showForm}}" class="mask" catchtap="onFormCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">发布通知</view>
+
+    <view class="field">
+      <view class="field-label">标题</view>
+      <input class="field-input" type="text" value="{{form.title}}"
+             data-field="title" bindinput="onInput" placeholder="如 本周周测安排" />
+    </view>
+
+    <view class="field field-col">
+      <view class="field-label">内容</view>
+      <textarea class="field-textarea" value="{{form.content}}"
+                data-field="content" bindinput="onInput"
+                placeholder="通知内容…" auto-height maxlength="500"></textarea>
+    </view>
+
+    <view class="field">
+      <view class="field-label">优先级</view>
+      <picker class="field-picker" range="{{priorities}}" value="{{priorityIndex}}" bindchange="onPriorityChange">
+        <view class="picker-text">优先级：{{priorities[priorityIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="field-label">日期</view>
+      <picker class="field-picker" mode="date" value="{{form.date}}" bindchange="onDateChange">
+        <view class="picker-text">{{form.date}}</view>
+      </picker>
+    </view>
+
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onFormCancel">取消</view>
+      <view class="btn-save {{saving ? 'disabled' : ''}}" bindtap="onFormSave">{{saving ? '发布中…' : '发布'}}</view>
+    </view>
+  </view>
+</view>

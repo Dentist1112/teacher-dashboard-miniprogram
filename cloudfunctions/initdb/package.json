@@ -1,0 +1,9 @@
+{
+  "name": "initdb",
+  "version": "1.0.0",
+  "description": "幂等创建业务集合",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

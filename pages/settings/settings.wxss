@@ -1,0 +1,100 @@
+/* 流派色：settings → 墨黑（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #5A6078; }
+
+.form .field {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+}
+.field-label { width: 140rpx; color: var(--text2); flex-shrink: 0; }
+.field-input { flex: 1; font-size: 28rpx; }
+.btn-save {
+  margin-top: 28rpx;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 22rpx;
+  text-align: center;
+  font-size: 30rpx;
+}
+.btn-save.disabled { opacity: 0.5; }
+.card-title { font-size: 30rpx; font-weight: 600; margin-bottom: 16rpx; color: var(--text); }
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+  font-size: 28rpx;
+}
+.stat-v { color: var(--primary); font-weight: 600; }
+.refresh-tip { margin-top: 18rpx; text-align: center; color: var(--gold); }
+.openid-text { word-break: break-all; margin-bottom: 10rpx; }
+
+/* AI 密钥卡 */
+.ai-key-tip { font-size: 23rpx; color: var(--text3); margin-bottom: 16rpx; line-height: 1.5; }
+.ai-status { font-size: 24rpx; margin: 18rpx 0 4rpx; }
+.ai-status.ok { color: var(--primary); }
+.ai-status.no { color: var(--text3); }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+/* ===== 教师身份（头像 + 昵称）=====
+ * button 默认自带 1px 边框和白底，不清掉头像外面会套一圈灰框（::after 是那圈边框） */
+.me-row { display: flex; align-items: center; gap: var(--sp-3); margin: var(--sp-2) 0 var(--sp-3); }
+/* button 在 flex 行里会被默认 padding/min-width 撑成一个大椭圆，
+ * 头像只贴在最左、右边一圈空框（真机反馈）。必须显式锁成正圆并禁止伸缩。 */
+.me-avatar-btn {
+  width: 112rpx; height: 112rpx;
+  min-width: 112rpx; max-width: 112rpx;
+  padding: 0; margin: 0;
+  flex: 0 0 112rpx;
+  box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  border: none; border-radius: 50%;
+  background: var(--card-2);
+  overflow: hidden; line-height: 1;
+  font-size: 0;
+}
+.me-avatar-btn::after { border: none; }
+/* image 必须铺满父圆并继承圆角，否则只按原始尺寸显示在左上角 */
+.me-avatar {
+  width: 100%; height: 100%;
+  border-radius: inherit;
+  display: block;
+}
+.me-avatar-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44rpx; line-height: 1;
+  color: var(--accent);
+  background: var(--card-2);
+}
+.me-info { flex: 1; display: flex; flex-direction: column; gap: 6rpx; }
+.me-nick {
+  height: 76rpx;
+  padding: 0 var(--sp-2);
+  background: var(--card-2);
+  border-radius: var(--radius-s);
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+.me-actions { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.me-save { flex: 1; margin: 0; }
+.link-logout { font-size: var(--fs-sm); color: var(--danger); padding: var(--sp-1) var(--sp-2); }

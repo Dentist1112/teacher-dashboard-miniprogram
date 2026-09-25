@@ -1,0 +1,91 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view class="card header">
+    <view class="header-title">
+      <view class="title f-happy">数据分析</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+  </view>
+
+  <!-- 周期切换 -->
+  <view class="seg">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="seg-item {{index === tabIndex ? 'on' : ''}}"
+          data-i="{{index}}" bindtap="onTab">{{item.label}}</view>
+  </view>
+  <view class="muted range-text">{{rangeText}}</view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 5 }}"/>
+
+  <block wx:else>
+    <template is="gmEmpty" wx:if="{{result.empty}}"
+              data="{{ show: true, title: '这个周期还没有数据', desc: '登记考勤、作业、成绩或奖惩后会自动汇总' }}"/>
+
+    <block wx:else>
+      <!-- 考勤 -->
+      <view class="card" wx:if="{{result.attendance.total > 0}}">
+        <view class="card-title f-happy">🗓 考勤</view>
+        <view class="kpi-row">
+          <view class="kpi ok"><text class="kpi-n">{{result.attendance.normal}}</text><text class="muted">正常</text></view>
+          <view class="kpi warn"><text class="kpi-n">{{result.attendance.late}}</text><text class="muted">迟到</text></view>
+          <view class="kpi pink"><text class="kpi-n">{{result.attendance.leave}}</text><text class="muted">请假</text></view>
+          <view class="kpi"><text class="kpi-n">{{result.attendance.rate === null ? '—' : result.attendance.rate + '%'}}</text><text class="muted">正常率</text></view>
+        </view>
+        <view wx:if="{{result.attendance.abnormal.length}}" class="ab-list">
+          <view class="ab-item" wx:for="{{result.attendance.abnormal}}" wx:key="name">
+            <text class="ab-name">{{item.name}}</text>
+            <text class="ab-badge {{item.status === '迟到' ? 'late' : 'leave'}}">{{item.status}}</text>
+            <text wx:if="{{item.reason}}" class="muted ab-reason">{{item.reason}}</text>
+          </view>
+        </view>
+        <view class="muted foot-note">默认全班正常，仅登记迟到/请假；按全班人次统计。</view>
+      </view>
+
+      <!-- 作业 -->
+      <view class="card" wx:if="{{result.homework.recorded > 0}}">
+        <view class="card-title f-happy">📝 作业收交</view>
+        <view class="kpi-row">
+          <view class="kpi ok"><text class="kpi-n">{{result.homework.done}}</text><text class="muted">已完成</text></view>
+          <view class="kpi warn"><text class="kpi-n">{{result.homework.late}}</text><text class="muted">补交</text></view>
+          <view class="kpi"><text class="kpi-n">{{result.homework.exempt}}</text><text class="muted">免交</text></view>
+          <view class="kpi"><text class="kpi-n">{{result.homework.rate === null ? '—' : result.homework.rate + '%'}}</text><text class="muted">完成率</text></view>
+        </view>
+        <view class="muted foot-note">按本周期有收交记录的人次统计。</view>
+      </view>
+
+      <!-- 奖惩 -->
+      <view class="card" wx:if="{{result.rewards.reward > 0 || result.rewards.punish > 0}}">
+        <view class="card-title f-happy">⭐ 奖惩</view>
+        <view class="kpi-row">
+          <view class="kpi ok"><text class="kpi-n">{{result.rewards.reward}}</text><text class="muted">奖励次数</text></view>
+          <view class="kpi warn"><text class="kpi-n">{{result.rewards.punish}}</text><text class="muted">惩戒次数</text></view>
+          <view class="kpi {{result.rewards.net < 0 ? 'warn' : 'ok'}}"><text class="kpi-n">{{result.rewards.net >= 0 ? '+' : ''}}{{result.rewards.net}}</text><text class="muted">净积分</text></view>
+        </view>
+      </view>
+
+      <!-- 成绩 -->
+      <view class="card" wx:if="{{result.scores.count > 0}}">
+        <view class="card-title f-happy">📈 成绩（本周期录入 {{result.scores.count}} 条）</view>
+        <view wx:if="{{result.scores.overallPct !== null}}" class="overall">
+          整体平均得分率 <text class="overall-n">{{result.scores.overallPct}}%</text>
+        </view>
+        <view class="subj-row" wx:for="{{result.scores.subjects}}" wx:key="subject">
+          <text class="subj-name">{{item.subject}}</text>
+          <view class="subj-bar"><view class="subj-in" style="width:{{item.avgPct}}%"></view></view>
+          <text class="subj-pct">{{item.avgPct}}%</text>
+          <text class="muted subj-n">{{item.count}}条</text>
+        </view>
+      </view>
+
+      <!-- 待办 -->
+      <view class="card" wx:if="{{result.todos.total > 0}}">
+        <view class="card-title f-happy">✅ 待办</view>
+        <view class="kpi-row">
+          <view class="kpi ok"><text class="kpi-n">{{result.todos.done}}</text><text class="muted">已完成</text></view>
+          <view class="kpi warn"><text class="kpi-n">{{result.todos.open}}</text><text class="muted">未完成</text></view>
+        </view>
+      </view>
+    </block>
+  </block>
+</view>

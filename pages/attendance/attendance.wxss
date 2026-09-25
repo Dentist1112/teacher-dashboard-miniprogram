@@ -1,0 +1,182 @@
+/* 流派色：attendance → 暗金（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #A84E08; }
+
+.container { padding: 24rpx; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.header-info { flex: 1; min-width: 0; }
+.date-picker { display: inline-block; margin-top: 16rpx; }
+.date-text {
+  display: inline-block;
+  font-size: 26rpx;
+  color: var(--indigo);
+  background: rgba(31, 90, 168, 0.08);
+  border-radius: 999rpx;
+  padding: 10rpx 26rpx;
+  line-height: 1.4;
+}
+.save-btn {
+  background: var(--primary);
+  color: #fff;
+  font-size: 28rpx;
+  padding: 20rpx 40rpx;
+  border-radius: 999rpx;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 4rpx 12rpx rgba(11, 122, 98, 0.22);
+}
+.save-btn.disabled { opacity: 0.6; }
+
+.center-tip { text-align: center; padding: 40rpx 0; }
+
+.list-card { padding: 8rpx 24rpx; }
+.stu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0ead8;
+}
+.stu-row:last-child { border-bottom: none; }
+.stu-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.row-no {
+  color: var(--gold);
+  font-size: 24rpx;
+  min-width: 48rpx;
+  font-weight: 600;
+}
+.row-name {
+  font-size: 30rpx;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.untag {
+  font-size: 20rpx;
+  color: #6E6E76;
+  background: #F2F2F5;
+  border-radius: 999rpx;
+  padding: 4rpx 14rpx;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.status-btns { display: flex; gap: 8rpx; }
+.status-btn {
+  font-size: 22rpx;
+  color: var(--text);
+  background: #f3efe3;
+  border: 1rpx solid #e5ddc9;
+  border-radius: 10rpx;
+  padding: 10rpx 14rpx;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.status-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 10rpx rgba(185, 65, 46, 0.2);
+}
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+/* tab 预留：自定义底部导航悬浮，正文底部留空 */
+page .container { padding-bottom: calc(180rpx + env(safe-area-inset-bottom)); }
+
+/* 重复登记提示条：沿用页面既有卡片样式，只加一行文字 + 一个次要按钮，不改整体风格 */
+.dup-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.dup-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #8A5A12;          /* 深琥珀：在浅卡片底上对比度 > 4.5，属提醒非报错 */
+}
+.dup-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  background: #F3F4F6;
+  color: #1F2937;
+  font-size: 26rpx;
+}
+
+/* ==== 2026-09-13 三状态改版：一键全员正常 + 请假事由 ==== */
+.quick-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.quick-all {
+  background: var(--primary);
+  color: #fff;
+  font-size: 26rpx;
+  padding: 16rpx 28rpx;
+  border-radius: 999rpx;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 4rpx 12rpx rgba(11, 122, 98, 0.22);
+}
+.quick-pending { font-size: 24rpx; white-space: nowrap; }
+
+.stu-name-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4rpx; }
+.row-reason {
+  font-size: 22rpx;
+  color: #8A5A12;
+  background: rgba(168, 78, 8, 0.08);
+  border-radius: 8rpx;
+  padding: 4rpx 12rpx;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.legacy-tag {
+  margin-left: 10rpx;
+  color: #6E6E76;
+  font-size: 20rpx;
+}
+.row-leave { background: rgba(168, 78, 8, 0.03); }
+
+/* 三个状态用稳定配色：正常=薄荷 / 迟到=琥珀 / 请假=蜜桃，激活态白字 */
+.status-btn.st-0.active { background: var(--primary); border-color: var(--primary); }
+.status-btn.st-1.active { background: #A84E08; border-color: #A84E08; color: #fff; font-weight: 600; }
+.status-btn.st-2.active { background: var(--pink); border-color: var(--pink); color: #fff; font-weight: 600; box-shadow: 0 4rpx 10rpx rgba(178,58,94,0.2); }
+
+.att-tip { text-align: center; font-size: 23rpx; padding: 8rpx 24rpx 0; }

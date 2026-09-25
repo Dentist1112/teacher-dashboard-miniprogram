@@ -1,0 +1,12 @@
+/* 全部功能页：宫格目录
+ * 视觉一律走 app.wxss 的共享实现（.gm-grid / .gm-tile / .gm-ic），本页只留页面级间距。
+ * 注：.tile 是纯标记类，供 e2e 统计入口数量，无样式——删了会让 e2e 失明。
+ * 层级约定：宫格只表达「分组 → 入口」一层，再深就交给列表页，不在这里嵌套。 */
+
+/* accent 必须与其余 13 页互异（contrast.py 会挡）：dashboard 已占 #0B7A62，
+ * 这里取更深一档的墨青 #12654B（vs 白 7.03，实测达 AA） */
+page { --accent: #12654B; }
+
+.all-head { padding: 8rpx 4rpx 20rpx; }
+
+.grp { margin-bottom: 28rpx; }

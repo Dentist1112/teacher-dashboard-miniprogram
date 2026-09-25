@@ -1,0 +1,247 @@
+/* 流派色：grades → 墨绿（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #4A46B8; }
+
+.header { display: flex; align-items: center; justify-content: space-between; }
+.header-title { flex: 1; min-width: 0; }
+.save-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 32rpx;
+  font-size: 27rpx;
+  flex-shrink: 0;
+}
+.save-btn.disabled { opacity: 0.5; }
+.center-tip { text-align: center; padding: 48rpx 24rpx; }
+.card-title { font-size: 30rpx; font-weight: 600; margin-bottom: 18rpx; }
+
+/* 选择区 */
+.pick-row {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #F0EBE0;
+}
+.pick-row:last-child { border-bottom: 0; }
+.pick-label { width: 90rpx; color: #48484F; font-size: 27rpx; flex-shrink: 0; }
+.pick-body { flex: 1; min-width: 0; }
+.pick-text { font-size: 28rpx; color: var(--text); }
+.pick-input { flex: 1; font-size: 28rpx; }
+.pick-edit {
+  font-size: 24rpx;
+  color: var(--gold);
+  padding: 6rpx 18rpx;
+  background: rgba(169,139,47,0.08);
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+.pick-hint { font-size: 22rpx; flex-shrink: 0; }
+
+/* 统计 */
+.stat-card { display: flex; }
+.stat-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4rpx; }
+.stat-num { font-size: 34rpx; font-weight: 700; color: var(--primary); }
+
+/* 分布条 */
+.bar-row { display: flex; align-items: center; gap: 14rpx; padding: 8rpx 0; }
+.bar-label { width: 150rpx; font-size: 22rpx; color: #48484F; flex-shrink: 0; white-space: nowrap; }
+.bar-track { flex: 1; height: 22rpx; background: #F2F2F5; border-radius: 999rpx; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999rpx; min-width: 2rpx; }
+.bar-a { background: var(--bamboo); }
+.bar-b { background: var(--indigo); }
+.bar-c { background: #C99A3F; }
+.bar-d { background: var(--danger); }
+.bar-num { width: 50rpx; text-align: right; font-size: 24rpx; color: #555; flex-shrink: 0; }
+
+/* 录入行 */
+.list-card { padding: 8rpx 24rpx; }
+.grade-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #F5F5F7;
+}
+.grade-row:last-child { border-bottom: 0; }
+.stu-info { display: flex; align-items: center; gap: 14rpx; flex: 1; min-width: 0; }
+.row-no { font-size: 24rpx; color: #6E6E76; width: 56rpx; flex-shrink: 0; }
+.row-name { font-size: 29rpx; font-weight: 500; }
+.rank-tag {
+  font-size: 20rpx;
+  color: var(--indigo);
+  background: rgba(46,74,107,0.1);
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+.score-input {
+  width: 130rpx;
+  text-align: center;
+  font-size: 30rpx;
+  padding: 10rpx 0;
+  background: #F2F2F5;
+  border-radius: 10rpx;
+  flex-shrink: 0;
+}
+/* 非法分数：9% 淡红底在真机上几乎看不见（用户真机反馈），
+ * 所以改成「实心描边 + danger 文字色」——不改配色体系，只提高可见度。 */
+.score-input.invalid {
+  background: rgba(194,64,46,0.10);
+  color: #B93A2B;              /* 比 --danger 深一档，保证淡红底上对比度 >=4.5（contrast.py 实测 4.92） */
+  font-weight: 600;
+  border: 2rpx solid var(--danger);
+}
+.score-input.focus-bad { background: rgba(194,64,46,0.18); }
+.bad-why { font-size: 20rpx; color: var(--danger); margin-right: 10rpx; flex-shrink: 0; }
+.full-warn { padding: 18rpx 24rpx; border-left: 6rpx solid var(--danger); }
+.full-warn-text { font-size: 24rpx; color: var(--danger); }
+
+/* 表单 */
+.mask {
+  position: fixed;
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+.form-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  /* 表单比屏幕高时必须能滚，否则底部「保存/发布」按钮被顶出可视区（用户实测反馈：通知加不了）*/
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.form-title { font-size: 34rpx; font-weight: 600; color: var(--primary); margin-bottom: 24rpx; }
+.field { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid var(--sep); }
+.field-label { width: 100rpx; color: var(--text2); font-size: 28rpx; flex-shrink: 0; }
+.field-input { flex: 1; font-size: 28rpx; }
+.exam-tip { margin-top: 18rpx; font-size: 22rpx; }
+.form-actions { display: flex; gap: 20rpx; margin-top: 32rpx; }
+.btn-cancel, .btn-save {
+  flex: 1;
+  text-align: center;
+  padding: 22rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+}
+.btn-cancel { background: var(--wash); color: var(--text2); }
+.btn-save { background: var(--primary); color: #fff; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+/* ============ AI 录入相关 ============ */
+.header-actions { display: flex; align-items: center; gap: 14rpx; flex-shrink: 0; }
+.ai-btn {
+  background: var(--gold);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 26rpx;
+  font-size: 25rpx;
+  flex-shrink: 0;
+}
+.ai-note {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin: 0 24rpx;
+  padding: 14rpx 20rpx;
+  background: rgba(178, 58, 94, 0.08);
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  color: var(--pink-d);
+}
+.ai-note-text { flex: 1; }
+.ai-note-close { font-size: 32rpx; color: var(--pink-d); padding: 0 6rpx; }
+.ai-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  margin-bottom: 4rpx;
+  cursor: pointer;
+}
+.ai-tip-main { font-size: 26rpx; color: var(--text); }
+.ai-tip-sub { font-size: 22rpx; color: var(--text3); }
+
+/* 录入行上的 AI 标记 + 低置信高亮 */
+.ai-badge {
+  font-size: 18rpx;
+  color: #fff;
+  background: var(--pink);
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+  line-height: 1.4;
+}
+.ai-badge.low { background: #8A6A1A; }
+.score-input.ai-low { background: rgba(122, 78, 10, 0.12); color: #7A4E00; }
+
+/* 粘贴文本弹窗 */
+.paste-area {
+  width: 100%;
+  min-height: 200rpx;
+  box-sizing: border-box;
+  padding: 18rpx;
+  font-size: 27rpx;
+  line-height: 1.5;
+  background: var(--card-2);
+  border: 1rpx solid var(--sep);
+  border-radius: 16rpx;
+}
+
+/* tab 预留：自定义底部导航悬浮，正文底部留空 */
+page .container { padding-bottom: calc(180rpx + env(safe-area-inset-bottom)); }
+
+/* 弹层表单可滚动后，把操作条固定在弹层底部：老师滚到哪都能看到「保存/发布」
+   （用户实测反馈 2026-09-06：新加通知时只能打字，找不到保存按钮）*/
+.form-sheet .form-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-bottom: 4rpx;
+  z-index: 2;
+}
+
+/* ============ v0.9.5 名次波动预警 ============ */
+.wave-card { border-left: 8rpx solid var(--warn); }
+.wave-sub { font-size: 22rpx; margin: -8rpx 0 14rpx; }
+.wave-sec { margin-top: 14rpx; }
+.wave-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+  margin-bottom: 10rpx;
+}
+.wave-tag.wave-down { background: rgba(194,64,46,0.12); color: #B93A2B; }
+.wave-tag.wave-up { background: rgba(11,122,98,0.12); color: var(--primary-d); }
+.wave-item {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid var(--sep);
+  font-size: 26rpx;
+}
+.wave-item:last-child { border-bottom: 0; }
+.wave-name { font-weight: 600; color: var(--text); min-width: 120rpx; }
+.wave-path { color: var(--text3); font-size: 24rpx; flex: 1; }
+.wave-n { font-weight: 700; font-size: 24rpx; }
+.wave-n.wave-down { color: #B93A2B; }
+.wave-n.wave-up { color: var(--primary-d); }

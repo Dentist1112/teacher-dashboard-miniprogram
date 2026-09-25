@@ -1,0 +1,172 @@
+/* 流派色：schedule → 朱红（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #C1355A; }
+
+/* 选择器必须全 ASCII：中文类名会让整份 wxss 编译失败（科目名已在 js 里映射成 SUB_CLS） */
+.header { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.header-title { flex: 1; min-width: 0; }
+.back-btn { color: var(--primary); font-size: 28rpx; padding: 10rpx 16rpx 10rpx 0; flex-shrink: 0; }
+.save-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 34rpx;
+  font-size: 27rpx;
+  flex-shrink: 0;
+}
+.save-btn.save-idle { background: #D6D6DB; color: #55524A; }
+.center-tip { text-align: center; padding: 48rpx 24rpx; }
+.card-title { font-size: 30rpx; font-weight: 600; color: var(--indigo); margin-bottom: 18rpx; }
+
+/* 概览 */
+.summary { display: flex; }
+.sum-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4rpx; }
+.sum-num { font-size: 32rpx; font-weight: 700; color: var(--text); }
+.sum-empty { color: #5C594F; }
+.sum-warn { color: var(--primary); }
+
+/* 工具条 */
+.tool-btns { display: flex; gap: 12rpx; }
+.tool-btn {
+  flex: 1;
+  text-align: center;
+  font-size: 25rpx;
+  padding: 16rpx 0;
+  border-radius: 10rpx;
+  background: #F0EADC;
+  color: var(--indigo);
+}
+.tool-btn.tool-danger { background: #FBECE9; color: var(--primary); }
+.tip { font-size: 23rpx; color: #5C594F; margin-top: 14rpx; line-height: 1.6; }
+
+/* 不合理告警 */
+.warn-card { border-left: 6rpx solid var(--primary); }
+.warn-title { color: var(--primary); }
+.warn-line { font-size: 25rpx; color: #6B5F52; line-height: 1.9; }
+
+/* 周表网格 */
+.grid-card { padding: 18rpx 12rpx; }
+.grid-head { display: flex; align-items: stretch; margin-bottom: 8rpx; }
+.grid-corner { width: 48rpx; flex-shrink: 0; }
+/* 表头一行放「周一 9/7」：老师反馈两行太高，且「已排节数」在上方概览里已有，去掉不丢信息 */
+.grid-day {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4rpx;
+  padding: 4rpx 0;
+  border-radius: 8rpx;
+}
+.grid-day.grid-today { background: #FBECE9; }
+.grid-day-label { font-size: 23rpx; color: var(--indigo); font-weight: 600; }
+.grid-day-date { font-size: 19rpx; color: #5F5B51; }
+.grid-row { display: flex; align-items: stretch; margin-bottom: 6rpx; }
+.grid-row.row-pm { margin-top: 12rpx; }
+/* 午间延时行：把上午/下午在视觉上切开，避免老师看错节次 */
+.grid-row.row-noon {
+  margin: 10rpx 0;
+  padding: 4rpx 0;
+  background: rgba(138, 90, 0, 0.05);
+  border-radius: 8rpx;
+}
+.grid-row.row-noon .grid-period { color: #7A5300; font-weight: 600; }
+.grid-period {
+  width: 48rpx;
+  flex-shrink: 0;
+  font-size: 21rpx;
+  color: #5F5B51;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.grid-cell {
+  flex: 1;
+  margin: 0 3rpx;
+  height: 54rpx;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FAF8F2;
+}
+.grid-cell.cell-empty { background: #F2EFE6; border: 1rpx dashed #DCD5C6; }
+.cell-sub { font-size: 22rpx; font-weight: 600; }
+
+/* 单日编排 */
+.slot-line {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 8rpx;
+  border-bottom: 1rpx solid #EFEADF;
+}
+.slot-line.slot-pm { background: #FBFAF5; }
+.slot-line.slot-noon { background: rgba(138, 90, 0, 0.05); }
+.slot-line.slot-noon .slot-label { color: #7A5300; font-weight: 600; }
+.slot-label { width: 110rpx; font-size: 25rpx; color: #5C594F; flex-shrink: 0; }
+.slot-sub {
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+}
+.slot-blank { font-size: 24rpx; color: #6E6A5E; }
+.picked-hint { font-size: 23rpx; color: var(--primary); font-weight: 400; }
+
+/* 科目池 */
+.chip-wrap { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.chip {
+  font-size: 24rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  background: #F0EADC;
+  color: var(--indigo);
+}
+.chip-num { font-size: 21rpx; opacity: 0.7; margin-left: 4rpx; }
+.pool-chip { border: 1rpx solid transparent; }
+.chip-picked { border-color: var(--primary); background: #FBECE9; color: var(--primary); font-weight: 600; }
+
+/* 科目配色：类名全 ASCII，由 js 的 SUB_CLS 映射得来 */
+.sub-chn { background: #FBECE9; color: #93301F; }
+.sub-math { background: #DFE8F5; color: #2F5C93; }
+.sub-eng { background: #E4F0E2; color: #3E7040; }
+.sub-phy { background: #EDE4F3; color: #6A4A8C; }
+.sub-chem { background: #FBEEDA; color: #6B4A10; }
+.sub-bio { background: #DFF0EC; color: #2C6F63; }
+.sub-pol { background: #F3E7E0; color: #6E4428; }
+.sub-his { background: #EAE6DA; color: #6E6449; }
+.sub-geo { background: #E0EDF2; color: #366A7C; }
+.sub-pe { background: #E8F1DA; color: #5A7229; }
+.sub-music { background: #F5E4EE; color: #7A2F5E; }
+.sub-art { background: #FDF0EC; color: #8E4023; }
+.sub-artc { background: #EDE7FA; color: #4C3A93; }
+.sub-it { background: #E2E6F0; color: #4A5480; }
+.sub-self { background: var(--wash); color: var(--text2); }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+.grid-cell.cell-picked { outline: 3rpx solid var(--primary); outline-offset: -3rpx; box-shadow: inset 0 0 0 4rpx rgba(255,255,255,0.6); }
+/* 待填格子：虚线框 + 浅底，和交换选中（实线）肉眼可分 */
+.grid-cell.cell-target { outline: 3rpx dashed var(--primary); outline-offset: -3rpx; background: #FFF6E0; }
+.slot-line.cell-target { outline: 3rpx dashed var(--primary); outline-offset: -3rpx; border-radius: 12rpx; }
+.swap-bar { margin-top: 16rpx; padding: 16rpx 20rpx; background: var(--wash); border-radius: 16rpx; display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.swap-bar-text { font-size: 24rpx; color: var(--text); flex: 1; min-width: 0; }
+.swap-bar-key { color: var(--primary); font-weight: 600; }
+.swap-bar-cancel { font-size: 24rpx; color: var(--primary); flex-shrink: 0; }

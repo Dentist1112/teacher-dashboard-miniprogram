@@ -1,0 +1,132 @@
+/* 流派色：rewards → 朱红（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #B23A5E; }
+
+.header { display: flex; align-items: center; justify-content: space-between; }
+.header-title { flex: 1; min-width: 0; }
+.add-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 12rpx 28rpx;
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
+.center-tip { text-align: center; padding: 48rpx 24rpx; }
+
+/* 汇总 */
+.summary { display: flex; }
+.sum-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+.sum-num { font-size: 40rpx; font-weight: 700; color: var(--text); }
+.sum-add { color: var(--bamboo); }
+.sum-sub { color: var(--primary); }
+
+/* 筛选 */
+.filter-bar { display: flex; gap: 16rpx; }
+.filter-btn {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  color: #55555C;
+  background: #F5F5F7;
+}
+.filter-btn.active { background: var(--primary); color: #fff; }
+
+/* 记录行：迁入 app.wxss 的共享卡片列表（.cl / .cl-av / .cl-main / .cl-t / .cl-s）。
+ * 改列表观感请改 app.wxss 一处。 */
+
+/* 列表行首行：奖励/惩戒胶囊 + 姓名 + 积分，要同行并支持变长 */
+.cl-t { display: flex; align-items: center; gap: 8rpx; }
+
+.rtag {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+}
+.rtag-add { background: rgba(30, 122, 71, 0.08); color: var(--bamboo); }
+.rtag-sub { background: rgba(194, 64, 46, 0.08); color: var(--danger); }
+.rec-points { font-size: 30rpx; font-weight: 700; flex-shrink: 0; }
+.points-add { color: var(--bamboo); }
+.points-sub { color: var(--danger); }
+
+/* 操作按钮改为横排，省横向空间 */
+.cl-end { flex-direction: row; gap: 12rpx; flex-shrink: 0; }
+.act { font-size: 24rpx; padding: 8rpx 18rpx; border-radius: 999rpx; }
+.act.edit { color: var(--indigo); background: rgba(31, 90, 168, 0.08); }
+.act.del { color: var(--danger); background: rgba(194, 64, 46, 0.08); }
+
+/* 表单 */
+.mask {
+  position: fixed;
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+.form-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.form-title { font-size: 34rpx; font-weight: 600; color: var(--primary); margin-bottom: 24rpx; }
+.field {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F0EBE0;
+}
+.field-col { flex-direction: column; align-items: stretch; gap: 12rpx; }
+.field-label { width: 120rpx; color: #48484F; font-size: 28rpx; flex-shrink: 0; }
+.field-input { flex: 1; font-size: 28rpx; }
+.field-picker { flex: 1; }
+.picker-text { font-size: 28rpx; color: var(--text); }
+.field-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 120rpx;
+  font-size: 28rpx;
+  background: #F2F2F5;
+  border-radius: 10rpx;
+  padding: 16rpx;
+}
+.form-actions { display: flex; gap: 20rpx; margin-top: 32rpx; }
+.btn-cancel, .btn-save {
+  flex: 1;
+  text-align: center;
+  padding: 22rpx;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+}
+.btn-cancel { background: #F0EBE0; color: #48484F; }
+.btn-save { background: var(--primary); color: #fff; }
+.btn-save.disabled { opacity: 0.5; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }

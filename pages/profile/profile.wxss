@@ -1,0 +1,295 @@
+/* 流派色：profile → 墨绿（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #6D3FA0; }
+
+/* 选择器必须全 ASCII：中文类名会让整份 wxss 编译失败（标签名已在 js 里映射成 TAG_CLS） */
+.header { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.header-title { flex: 1; min-width: 0; }
+.back-btn { color: var(--primary); font-size: 28rpx; padding: 10rpx 16rpx 10rpx 0; flex-shrink: 0; }
+.edit-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 30rpx;
+  font-size: 27rpx;
+  flex-shrink: 0;
+}
+.center-tip { text-align: center; padding: 48rpx 24rpx; }
+.card-title { font-size: 30rpx; font-weight: 600; color: var(--indigo); margin-bottom: 18rpx; }
+
+/* 概览 */
+.summary { display: flex; }
+.sum-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4rpx; }
+.sum-num { font-size: 34rpx; font-weight: 700; color: var(--text); }
+.sum-risk { color: var(--primary); }
+.sum-watch { color: var(--gold); }
+.sum-miss { color: #6E6E76; }
+
+/* 搜索 */
+.search-card { display: flex; align-items: center; gap: 16rpx; padding: 18rpx 24rpx; }
+.search-input { flex: 1; font-size: 28rpx; }
+.search-clear { font-size: 24rpx; color: var(--primary); flex-shrink: 0; }
+
+/* 筛选 */
+.filter-bar { display: flex; gap: 12rpx; padding: 16rpx; }
+.filter-btn {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  padding: 14rpx 0;
+  border-radius: 10rpx;
+  background: #F2F2F5;
+  color: #48484F;
+}
+.filter-btn.active { background: var(--primary); color: #fff; }
+
+/* 名册卡 */
+.stu-head { display: flex; align-items: center; gap: 12rpx; flex-wrap: wrap; margin-bottom: 12rpx; }
+.stu-no { font-size: 24rpx; color: #6E6E76; }
+.stu-name { font-size: 30rpx; font-weight: 600; }
+.gtag { font-size: 21rpx; padding: 2rpx 12rpx; border-radius: 999rpx; }
+.gtag-male { color: var(--indigo); background: rgba(46,74,107,0.1); }
+.gtag-female { color: var(--wisteria); background: rgba(107,76,138,0.08); }
+.risk-flag {
+  font-size: 21rpx;
+  color: #fff;
+  background: var(--primary);
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+}
+.miss-flag {
+  font-size: 21rpx;
+  color: #55555C;
+  background: #F0EBE0;
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+}
+.stu-line, .info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 8rpx 0;
+}
+.info-row { padding: 14rpx 0; border-bottom: 1rpx solid #F5F5F7; }
+.info-row:last-child { border-bottom: 0; }
+.info-col { flex-direction: column; gap: 12rpx; }
+.lbl { font-size: 24rpx; color: #6E6E76; width: 120rpx; flex-shrink: 0; }
+.val { font-size: 26rpx; flex: 1; min-width: 0; line-height: 1.5; }
+.val-empty { color: #6E6E76; }
+.val-risk { color: var(--primary); font-weight: 600; }
+
+/* 标签 */
+.chip-row { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 8rpx; }
+.chip { font-size: 21rpx; padding: 3rpx 14rpx; border-radius: 999rpx; }
+.chip-cadre { color: #fff; background: var(--bamboo); }
+.chip-watch { color: #fff; background: var(--primary); }
+.chip-boarder { color: var(--indigo); background: rgba(46,74,107,0.08); }
+.chip-daily { color: #48484F; background: #F0EBE0; }
+.chip-sport { color: #fff; background: var(--gold); }
+.chip-art { color: #fff; background: var(--wisteria); }
+.chip-single { color: var(--primary); background: rgba(185,65,46,0.1); }
+.chip-aid { color: #5A4712; background: #FFF6DC; }
+.chip-other { color: #48484F; background: #F0EBE0; }
+
+/* 健康提示卡 */
+.risk-card { border-left: 8rpx solid var(--primary); background: rgba(185,65,46,0.06); }
+.risk-title { font-size: 28rpx; font-weight: 700; color: var(--primary); margin-bottom: 10rpx; }
+.risk-body { font-size: 27rpx; color: var(--text); line-height: 1.6; }
+
+/* 联系方式 */
+.contact-card { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.contact-phone { font-size: 34rpx; font-weight: 600; letter-spacing: 2rpx; flex: 1; min-width: 0; }
+.contact-acts { display: flex; gap: 12rpx; flex-shrink: 0; }
+.cbtn { font-size: 26rpx; padding: 12rpx 28rpx; border-radius: 10rpx; }
+.cbtn-call { color: #fff; background: var(--bamboo); }
+.cbtn-copy { color: var(--indigo); background: rgba(46,74,107,0.1); }
+
+/* 聚合统计 */
+.stat-card { display: flex; }
+.stat-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4rpx; }
+.stat-num { font-size: 32rpx; font-weight: 700; color: var(--primary); }
+
+.line-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 12rpx 0;
+  border-bottom: 1rpx dashed #E5E5EA;
+  font-size: 26rpx;
+}
+.line-item:last-child { border-bottom: 0; }
+.badge { font-size: 21rpx; padding: 2rpx 14rpx; border-radius: 999rpx; }
+.badge-warn { color: var(--primary); background: rgba(185,65,46,0.08); }
+.rew-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4rpx; }
+.rew-reason { font-size: 26rpx; }
+.points { font-size: 28rpx; font-weight: 700; flex-shrink: 0; }
+.points-add { color: var(--bamboo); }
+.points-sub { color: var(--primary); }
+
+/* 表单 */
+.mask {
+  position: fixed;
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+.form-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.form-title { font-size: 34rpx; font-weight: 600; color: var(--primary); margin-bottom: 24rpx; }
+.field { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid var(--sep); }
+.field-col { flex-direction: column; align-items: flex-start; gap: 12rpx; }
+.field-label { width: 100rpx; color: var(--text2); font-size: 28rpx; flex-shrink: 0; }
+.field-input { flex: 1; font-size: 28rpx; }
+.field-input.full { width: 100%; }
+.field-picker { flex: 1; min-width: 0; }
+.picker-text { font-size: 28rpx; }
+.field-textarea {
+  width: 100%;
+  font-size: 27rpx;
+  line-height: 1.5;
+  min-height: 100rpx;
+  background: var(--wash);
+  border-radius: 16rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+.tag-picker { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.tag-opt {
+  font-size: 24rpx;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  background: var(--wash);
+  color: var(--text2);
+}
+.tag-opt.on { background: var(--primary); color: #fff; }
+.form-actions { display: flex; gap: 20rpx; margin-top: 32rpx; }
+.btn-cancel, .btn-save {
+  flex: 1;
+  text-align: center;
+  padding: 22rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+}
+.btn-cancel { background: var(--wash); color: var(--text2); }
+.btn-save { background: var(--primary); color: #fff; }
+.btn-save.disabled { opacity: 0.5; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+/* ==== 2026-09-13 成绩综合分析 ==== */
+.score-analysis .sa-top { display: flex; align-items: center; gap: 24rpx; margin: 16rpx 0; }
+.sa-rank { display: flex; align-items: baseline; gap: 6rpx; }
+.sa-rank-num { font-size: 64rpx; font-weight: 800; color: var(--primary); line-height: 1; }
+.sa-rank-of { font-size: 24rpx; color: var(--text); }
+.sa-kpis { flex: 1; display: flex; gap: 16rpx; }
+.sa-kpi {
+  flex: 1;
+  background: var(--card-2, #F6F3EA);
+  border-radius: 16rpx;
+  padding: 14rpx 8rpx;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.sa-kpi-v { font-size: 30rpx; font-weight: 700; color: var(--text); }
+.sa-kpi-v.up { color: var(--primary); }
+.sa-kpi-v.down { color: var(--danger); }
+.sa-kpi .muted { font-size: 20rpx; }
+
+.sa-sw { display: flex; gap: 16rpx; margin-bottom: 16rpx; }
+.sa-tag { font-size: 24rpx; border-radius: 999rpx; padding: 8rpx 20rpx; line-height: 1.3; }
+.sa-tag.strong { color: var(--primary); background: rgba(11,122,98,0.1); }
+.sa-tag.weak { color: #8A5A12; background: rgba(168,78,8,0.1); }
+
+.sa-sub-head {
+  display: flex; justify-content: space-between;
+  font-size: 24rpx; color: var(--text);
+  padding: 12rpx 0; border-top: 1rpx solid var(--sep);
+}
+.sa-sub-head .muted { font-size: 22rpx; }
+.sa-sub-row {
+  display: flex; align-items: center; gap: 14rpx;
+  padding: 12rpx 0; border-bottom: 1rpx solid var(--sep);
+}
+.sa-sub-row:last-of-type { border-bottom: none; }
+.sa-sub-name { width: 84rpx; font-size: 26rpx; color: var(--text); flex-shrink: 0; }
+.sa-sub-score { width: 110rpx; font-size: 24rpx; color: var(--text); flex-shrink: 0; }
+.sa-bar { flex: 1; height: 14rpx; background: #EFEAD9; border-radius: 999rpx; overflow: hidden; min-width: 60rpx; }
+.sa-bar-in { height: 100%; background: var(--primary); border-radius: 999rpx; min-width: 4rpx; }
+.sa-sub-pct { width: 72rpx; text-align: right; font-size: 24rpx; color: var(--text); flex-shrink: 0; }
+.sa-sub-avg { width: 84rpx; text-align: right; font-size: 22rpx; flex-shrink: 0; }
+.sa-note { font-size: 22rpx; padding-top: 12rpx; }
+
+/* ============ v0.9.6 个人成绩全景 ============ */
+.pano-hint { font-size: 22rpx; margin: -8rpx 0 14rpx; }
+.pano-scroll { width: 100%; }
+.pano-table { display: inline-block; min-width: 100%; }
+.pn-row { display: flex; align-items: stretch; }
+.pn-head .pn-exam, .pn-head .pn-cell {
+  font-size: 20rpx;
+  color: var(--text3);
+  font-weight: 600;
+  background: #fff;
+}
+.pn-exam {
+  width: 148rpx;
+  min-width: 148rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 10rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--text);
+  background: #fff;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  box-shadow: 2rpx 0 0 var(--sep);
+}
+.pn-cell {
+  width: 84rpx;
+  min-width: 84rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: var(--text);
+  border: 2rpx solid #fff;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+}
+.pn-avg-head { color: var(--text3); }
+.pn-avg { font-weight: 700; background: var(--card-2); }
+/* 5 档：≥90 实心薄荷白字；其余同色透明度递减 + 深字；<60 珊瑚红 */
+.pn-lv1 { background: var(--primary); color: #fff; font-weight: 700; }
+.pn-lv2 { background: rgba(11,122,98,0.30); }
+.pn-lv3 { background: rgba(11,122,98,0.16); }
+.pn-lv4 { background: rgba(11,122,98,0.07); }
+.pn-lv5 { background: rgba(194,64,46,0.22); color: #8F2A1C; font-weight: 600; }
+.pn-lv0 { color: var(--text3); background: transparent; }

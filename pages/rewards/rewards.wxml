@@ -1,0 +1,108 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <view class="card header">
+    <view class="header-title">
+      <view class="title">奖惩记录</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="add-btn" bindtap="onAdd">+ 登记</view>
+  </view>
+
+  <!-- 汇总 -->
+  <view class="card summary">
+    <view class="sum-item">
+      <text class="sum-num sum-add">{{summary.rewardCount}}</text>
+      <text class="muted">奖励</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num sum-sub">{{summary.punishCount}}</text>
+      <text class="muted">惩戒</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num">{{summary.netPoints}}</text>
+      <text class="muted">净积分</text>
+    </view>
+  </view>
+
+  <!-- 筛选 -->
+  <view class="card filter-bar">
+    <view class="filter-btn {{filter === 'all' ? 'active' : ''}}" data-f="all" bindtap="onFilter">全部</view>
+    <view class="filter-btn {{filter === 'reward' ? 'active' : ''}}" data-f="reward" bindtap="onFilter">奖励</view>
+    <view class="filter-btn {{filter === 'punish' ? 'active' : ''}}" data-f="punish" bindtap="onFilter">惩戒</view>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:elif="{{shown.length}}">
+    <!-- 不等长记录 → 列表；事由/日期是变长文本 → 在列表里截断到 1 行 -->
+    <view class="card">
+      <view class="cl" wx:for="{{shown}}" wx:key="_id">
+        <view class="cl-av {{item.tcls === 'sub' ? 'a2' : 'a3'}}"
+              data-id="{{item._id}}" bindtap="onEdit">{{item.initial}}</view>
+        <view class="cl-main" data-id="{{item._id}}" bindtap="onEdit">
+          <view class="cl-t">
+            <text class="rtag rtag-{{item.tcls}}" style="margin-right:10rpx;">{{item.type}}</text>{{item.studentName}}
+            <text class="rec-points points-{{item.pcls}}" style="margin-left:auto;">{{item.pointsText}}</text>
+          </view>
+          <view class="cl-s clamp">{{item.reason}} · {{item.date}}</view>
+        </view>
+        <view class="cl-end">
+          <view class="act edit" data-id="{{item._id}}" bindtap="onEdit">编辑</view>
+          <view class="act del" data-id="{{item._id}}" bindtap="onDelete">删除</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <template is="gmEmpty" wx:else data="{{ show: true, title: filter === 'all' ? '暂无奖惩记录' : '该分类下暂无记录', desc: filter === 'all' ? '点右上角 + 登记第一条' : '切换到全部查看' }}"/>
+</view>
+
+<view wx:if="{{showForm}}" class="mask" catchtap="onFormCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">{{isEdit ? '编辑记录' : '登记奖惩'}}</view>
+
+    <view class="field">
+      <view class="field-label">学生</view>
+      <picker class="field-picker" range="{{studentLabels}}" value="{{studentIndex}}" bindchange="onStudentChange">
+        <view class="picker-text">{{studentLabels[studentIndex] || '请选择学生'}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="field-label">类型</view>
+      <picker class="field-picker" range="{{types}}" value="{{typeIndex}}" bindchange="onTypeChange">
+        <view class="picker-text">{{types[typeIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="field field-col">
+      <view class="field-label">事由</view>
+      <textarea class="field-textarea" value="{{form.reason}}" data-field="reason"
+                bindinput="onInput" placeholder="如 月考数学年级第 3 / 课上使用手机"
+                auto-height maxlength="200"></textarea>
+    </view>
+
+    <view class="field">
+      <view class="field-label">积分</view>
+      <input class="field-input" type="digit" value="{{form.pointsInput}}" data-field="pointsInput"
+             bindinput="onInput" placeholder="{{form.type === '惩戒' ? '如 3（自动记为 -3）' : '如 5'}}" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">日期</view>
+      <picker class="field-picker" mode="date" value="{{form.date}}" bindchange="onDateChange">
+        <view class="picker-text">{{form.date}}</view>
+      </picker>
+    </view>
+
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onFormCancel">取消</view>
+      <view class="btn-save {{saving ? 'disabled' : ''}}" bindtap="onFormSave">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+  </view>
+</view>

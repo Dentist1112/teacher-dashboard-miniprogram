@@ -1,0 +1,9 @@
+{
+  "name": "dbfix",
+  "version": "1.0.0",
+  "description": "一次性数据修复（删无主重复记录）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

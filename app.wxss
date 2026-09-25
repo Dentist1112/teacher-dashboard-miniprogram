@@ -1,0 +1,603 @@
+@import "/assets/fonts/fonts.wxss";
+/* ==========================================================================
+ * 班主任工作台 · 小程序 · 「薄荷×蜜桃」清新主题 v2
+ * --------------------------------------------------------------------------
+ * 定位（2026-09-05 用户拍板）：班主任用户以女性为主，弃用旧「大正和风」，
+ * 换明亮、流行、可爱向的「海盐薄荷 × 蜜桃粉」：薄荷青打底清爽耐看，
+ * 蜜桃粉做温柔点缀，整体圆角加大、按钮/标签胶囊化，柔和无棱角。
+ *
+ * 设计原则（可被机器校验，不靠"我觉得好看"）：
+ *   1) 色板为「薄荷×蜜桃」双主色：行动/主信息 = 薄荷青(teal)，可爱强调/奖励 = 蜜桃粉
+ *   2) 所有正文对底/卡对比度 ≥ 4.5（WCAG AA），由 tools/contrast.py 校验。
+ *      醒目色一律取"深档"（--primary #0B7A62 / --pink #B23A5E），
+ *      浅档（#0E8F74 / #F29AB4）只进系统导航栏、纯装饰背景与≥30rpx 粗体大字
+ *   3) 纹样/装饰全部用 CSS 渐变实现——零图片资源、零网络请求、包体不增
+ *   4) 动效只跑 transform / opacity（GPU 合成层）；.no-motion 供弱机降级
+ *   5) 中文绝不进 class 名（一号事故，check.js 规则 7 兜底）
+ *   6) 向后兼容：旧 .container/.card/.title/.subtitle/.muted/.btn 全保留语义；
+ *      历史 token 别名（--primary/--indigo/--bamboo/--wisteria/--vermilion/
+ *      --gold/--ink/--moss 等）全部落位，13 个页面旧引用零断链
+ * ========================================================================== */
+
+page {
+  /* ---- 主色板：薄荷青 × 蜜桃粉（深档才进 token，保证 AA） ---- */
+  --primary: #0B7A62;        /* 薄荷深青：主按钮/选中/标题/链接（白字 5.4 / 白底字 5.4） */
+  --primary-d: #0A5F4C;      /* 薄荷更深：主按钮渐变深端/按压态 */
+  --pink: #B23A5E;           /* 蜜桃深粉：可爱强调/奖励/爱心（白字 5.7 / 白底字 5.7） */
+  --pink-d: #962C4D;         /* 蜜桃深莓：深底上的粉 / 按压 */
+
+  /* ---- 旧体系别名（补全幽灵变量，全部映射进薄荷蜜桃体系且 AA） ---- */
+  --vermilion: var(--pink);        /* 旧"朱红" → 蜜桃粉（红被可爱化） */
+  --vermilion-d: var(--pink-d);
+  --moss: #1E7A47;                  /* 旧"墨绿" → 竹绿（正向） */
+  --moss-l: #17714B;                /* 亮竹绿 */
+  --bamboo: #1E7A47;                /* 竹绿：加分/正向/成功 */
+  --indigo: #1F5AA8;                /* 靛蓝：信息标题/链接 */
+  --wisteria: #6D4FA0;              /* 藤紫：关怀/心理 */
+  --gold: #8A5A00;                  /* 蜜糖金（深档）：次要链接/暖点缀（白底字 5.9） */
+  --ink: #122E26;                   /* 墨青：纹样/深色块 */
+  --ink-2: #1E4A3C;                 /* 次级墨青 */
+  --danger: #C2402E;                /* 珊瑚红：危险/缺勤/删除 */
+  --warn: #9A6210;                  /* 蜜琥珀：警示 */
+  --ok: var(--primary);             /* 正向 = 薄荷主色 */
+
+  /* ---- 底色阶（浅薄荷雾感，正文承载层，保持浅色 = AA 兜底模型不变） ---- */
+  --bg: #F4F5F7;            /* 页面底：浅灰（v3 清洁风） */
+  --card: #FFFFFF;          /* 卡片：纯白 */
+  --card-2: #F1F3F5;        /* 卡片内嵌套：浅灰 */
+  --sep: #E4E7EB;           /* 分割线：浅灰 */
+  --wash: rgba(17, 24, 39, 0.04);  /* 极淡灰洗：hover/选中底 */
+
+  /* ---- 文字（全部 ≥ AA，带薄荷感的深青墨） ---- */
+  --text: #111827;          /* 主文字：近黑 */
+  --text2: #4B5563;         /* 次要文字（对白 7.5） */
+  --text3: #68707B;         /* 最弱一档：占位/辅助（对灰底 4.6/对白 5.0） */
+
+  /* ---- 尺寸 / 间距（4rpx 基准；圆角加大 = 可爱感来源之一） ---- */
+  --sp-1: 8rpx;  --sp-2: 16rpx; --sp-3: 24rpx; --sp-4: 32rpx;
+  --sp-5: 40rpx; --sp-6: 56rpx;
+  --radius-s: 16rpx; --radius: 24rpx; --radius-l: 32rpx;
+  --shadow: 0 1rpx 3rpx rgba(18, 46, 38, 0.05), 0 10rpx 24rpx rgba(18, 46, 38, 0.05);
+  --shadow-l: 0 4rpx 12rpx rgba(18, 46, 38, 0.08), 0 18rpx 40rpx rgba(18, 46, 38, 0.07);
+
+  /* ---- 字体规范 ---- */
+  --fs-title: 36rpx; --fs-sub: 28rpx; --fs-body: 28rpx;
+  --fs-sm: 24rpx; --fs-xs: 22rpx;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: var(--fs-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =====================  清新纹样（纯 CSS，零资源）  ===================== */
+
+/* 薄荷市松（棋盘格）：底纹 / 头部装饰带，透明度由 --pat-op 控制 */
+.pat-ichimatsu {
+  background-image:
+    linear-gradient(45deg, var(--pat-c, var(--primary)) 25%, transparent 25% 75%, var(--pat-c, var(--primary)) 75%),
+    linear-gradient(45deg, var(--pat-c, var(--primary)) 25%, transparent 25% 75%, var(--pat-c, var(--primary)) 75%);
+  background-size: 24rpx 24rpx;
+  background-position: 0 0, 12rpx 12rpx;
+  opacity: var(--pat-op, 0.08);
+}
+/* 蜜桃波点（可爱化替换旧麻叶）：圆点阵列 */
+.pat-asanoha {
+  background-image: radial-gradient(circle, var(--pat-c, var(--pink)) 0 3rpx, transparent 4rpx);
+  background-size: 22rpx 22rpx;
+  opacity: var(--pat-op, 0.12);
+}
+/* 细波纹 / 轻浪：用于区块分隔带 */
+.pat-nami {
+  background-image:
+    radial-gradient(circle at 50% 100%, transparent 0 26rpx, var(--pat-c, var(--primary)) 26rpx 28rpx, transparent 28rpx),
+    radial-gradient(circle at 50% 100%, transparent 0 18rpx, var(--pat-c, var(--primary)) 18rpx 19rpx, transparent 19rpx);
+  background-size: 56rpx 28rpx, 56rpx 28rpx;
+  background-repeat: repeat-x;
+  opacity: var(--pat-op, 0.10);
+}
+
+/* 分割带：一条淡波纹线 */
+.div-nami {
+  height: 28rpx;
+  margin: var(--sp-3) 0;
+  background-image:
+    radial-gradient(circle at 50% 100%, transparent 0 26rpx, var(--sep) 26rpx 28rpx, transparent 28rpx),
+    radial-gradient(circle at 50% 100%, transparent 0 18rpx, var(--sep) 18rpx 19rpx, transparent 19rpx);
+  background-size: 56rpx 28rpx, 56rpx 28rpx;
+  background-repeat: repeat-x;
+  opacity: 0.9;
+}
+/* 蜜糖市松细分割线 */
+.div-ichimatsu {
+  height: 8rpx;
+  margin: var(--sp-3) 0;
+  background-image:
+    linear-gradient(45deg, var(--pat-c, var(--gold)) 25%, transparent 25% 75%, var(--pat-c, var(--gold)) 75%),
+    linear-gradient(45deg, var(--pat-c, var(--gold)) 25%, transparent 25% 75%, var(--pat-c, var(--gold)) 75%);
+  background-size: 16rpx 16rpx;
+  background-position: 0 0, 8rpx 8rpx;
+  opacity: 0.30;
+}
+
+/* =====================  动效（只跑 opacity/transform）  ===================== */
+
+/* 呼吸：光晕明暗起伏，用于强调元素 / 加载占位 */
+@keyframes gm-breath {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+/* 入场：卡片逐条上浮（配合 --i 做阶梯延迟） */
+@keyframes gm-rise {
+  from { opacity: 0; transform: translate3d(0, 16rpx, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+/* 薄荷桃流光扫过（只动 transform） */
+@keyframes gm-flow {
+  0%   { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(200%, 0, 0); }
+}
+
+.gm-breath { animation: gm-breath 3.2s ease-in-out infinite; }
+.gm-rise   { animation: gm-rise 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.gm-rise:nth-child(1) { animation-delay: 0.02s; }
+.gm-rise:nth-child(2) { animation-delay: 0.06s; }
+.gm-rise:nth-child(3) { animation-delay: 0.10s; }
+.gm-rise:nth-child(4) { animation-delay: 0.14s; }
+.gm-rise:nth-child(5) { animation-delay: 0.18s; }
+
+/* 流光容器：内部 .gm-flow-bar 扫过一次薄荷→蜜桃光带 */
+.gm-flow-wrap { position: relative; overflow: hidden; }
+.gm-flow-bar {
+  position: absolute; top: 0; bottom: 0; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(11, 122, 98, 0.14), rgba(178, 58, 94, 0.16), transparent);
+  animation: gm-flow 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* 弱机降级：给根节点加 .no-motion 即关闭全部动效 */
+.no-motion .gm-breath,
+.no-motion .gm-rise,
+.no-motion .gm-flow-bar { animation: none !important; }
+
+/* =====================  统一卡片（大白圆角）  ===================== */
+.container { padding: var(--sp-3) var(--sp-3) var(--sp-5); }
+
+.card {
+  background: #FFFDF9;
+  border: 2rpx solid #FBE9F0;
+  border-radius: 36rpx;
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-3);
+  box-shadow: 0 8rpx 28rpx rgba(216, 160, 190, 0.16);
+  position: relative;
+  overflow: hidden;
+}
+/* 卡片左上细条（本页专属色，不压字） */
+.card-accent { position: relative; overflow: hidden; }
+.card-accent::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 6rpx;
+  background: linear-gradient(180deg, var(--accent, var(--primary)), var(--accent-d, var(--primary-d)));
+}
+/* 纹样卡片：右上角一枚蜜桃市松角标 */
+.card-pattern::after {
+  content: '';
+  position: absolute; right: -28rpx; top: -28rpx;
+  width: 120rpx; height: 120rpx;
+  border-radius: 50%;
+  background-image:
+    linear-gradient(45deg, var(--pink) 25%, transparent 25% 75%, var(--pink) 75%),
+    linear-gradient(45deg, var(--pink) 25%, transparent 25% 75%, var(--pink) 75%);
+  background-size: 20rpx 20rpx;
+  background-position: 0 0, 10rpx 10rpx;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* =====================  统一文字  ===================== */
+.title    { font-size: var(--fs-title); font-weight: 600; color: var(--text); letter-spacing: -0.4rpx; font-family: HappyZcool, "Yuanti SC", "PingFang SC", sans-serif; }
+.subtitle { font-size: var(--fs-sm); font-weight: 600; color: var(--accent, var(--primary)); }
+.muted    { color: var(--text2); font-size: var(--fs-sm); }
+.tiny     { color: var(--text3); font-size: var(--fs-xs); }
+
+/* =====================  统一按钮（胶囊圆润）  ===================== */
+.btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-d));
+  color: #fff;
+  border-radius: 999rpx;
+  padding: var(--sp-3);
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  transition: transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease;
+  box-shadow: 0 6rpx 16rpx rgba(216, 160, 190, 0.28);
+}
+/* 按压态：只做 scale，不重排 */
+.btn-pressed { transform: scale(0.975); opacity: 0.92; box-shadow: 0 2rpx 6rpx rgba(216, 160, 190, 0.25); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--primary);
+  border: 2rpx solid var(--primary);
+  box-shadow: none;
+}
+.btn-moss {
+  background: rgba(14, 143, 116, 0.10);
+  color: var(--primary);
+  box-shadow: none;
+}
+.btn-pink {
+  background: linear-gradient(135deg, var(--pink), var(--pink-d));
+  color: #fff;
+  box-shadow: 0 4rpx 14rpx rgba(150, 44, 77, 0.18);
+}
+.btn-ink {
+  background: linear-gradient(135deg, var(--ink-2), var(--ink));
+  color: #fff;
+  box-shadow: 0 4rpx 14rpx rgba(18, 46, 38, 0.18);
+}
+.btn-sm { padding: var(--sp-2) var(--sp-3); font-size: var(--fs-sm); border-radius: 999rpx; }
+
+/* =====================  统一标签 / 徽标（胶囊粉彩）  ===================== */
+.tag {
+  display: inline-block;
+  padding: 4rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.6;
+}
+.tag-v { background: rgba(178, 58, 94, 0.10); color: var(--pink-d); }
+.tag-m { background: rgba(30, 122, 71, 0.10); color: var(--moss); }
+.tag-g { background: rgba(138, 90, 0, 0.12); color: #7A4F00; }
+.tag-n { background: var(--wash); color: var(--text2); }
+.tag-w { background: rgba(154, 98, 16, 0.12); color: #7C4E08; }
+
+/* =====================  统一区块标题  ===================== */
+.gm-sec {
+  display: flex;
+  align-items: center;
+  margin: var(--sp-4) 0 var(--sp-3);
+}
+.gm-sec-bar {
+  width: 6rpx; height: 30rpx;
+  border-radius: 3rpx;
+  background: linear-gradient(180deg, var(--accent, var(--primary)), var(--accent-d, var(--primary-d)));
+  margin-right: var(--sp-2);
+}
+.gm-sec-t { font-size: var(--fs-sub); font-weight: 600; color: var(--text); letter-spacing: 0.5rpx; }
+.gm-sec-x { margin-left: auto; font-size: var(--fs-xs); color: var(--text3); }
+
+/* =====================  统一空状态（蜜桃泡泡）  ===================== */
+.gm-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 32rpx;
+  text-align: center;
+}
+/* 空状态顶部：一枚薄荷环抱的圆泡泡（可爱向） */
+.gm-empty-mark {
+  width: 120rpx; height: 120rpx;
+  margin-bottom: var(--sp-3);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 44%, #FFFFFF 0 34rpx, transparent 35rpx),
+    radial-gradient(circle at 50% 50%, rgba(14, 143, 116, 0.14) 0 56rpx, transparent 57rpx),
+    radial-gradient(circle at 30% 28%, rgba(178, 58, 94, 0.10) 0 14rpx, transparent 15rpx);
+  box-shadow: 0 6rpx 18rpx rgba(18, 46, 38, 0.05);
+}
+.gm-empty-title { font-size: var(--fs-sub); font-weight: 600; color: var(--text2); margin-bottom: var(--sp-1); }
+.gm-empty-desc  { font-size: var(--fs-xs); color: var(--text3); line-height: 1.7; }
+
+/* =====================  统一加载态（骨架屏，只跑 opacity）  ===================== */
+.gm-skl { background: var(--card-2); border-radius: var(--radius); overflow: hidden; }
+.gm-skl-line {
+  height: 28rpx;
+  background: linear-gradient(90deg, var(--sep), var(--card-2), var(--sep));
+  border-radius: 8rpx;
+  margin-bottom: var(--sp-2);
+  animation: gm-breath 1.4s ease-in-out infinite;
+}
+.gm-skl-line.w40 { width: 40%; }
+.gm-skl-line.w60 { width: 60%; }
+.gm-skl-line.w80 { width: 80%; }
+/* 顶部细进度条（薄荷→蜜桃流光） */
+.gm-progress {
+  height: 4rpx;
+  background: var(--sep);
+  border-radius: 999rpx;
+  overflow: hidden;
+  position: relative;
+}
+.gm-progress-bar {
+  position: absolute; top: 0; bottom: 0; width: 36%;
+  background: linear-gradient(90deg, #0E8F74, #F29AB4);
+  animation: gm-flow 1.6s ease-in-out infinite;
+}
+
+/* =====================  演示模式提示条（兼容保留，换蜜糖色）  ===================== */
+.demo-banner {
+  background: #FFF6E0;
+  border-left: 6rpx solid var(--gold);
+  color: #6B4E00;
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-3);
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+.demo-banner .demo-strong { font-weight: 700; }
+
+/* ==========================================================================
+ * 共享布局系统 v1（2026-09-05）
+ * --------------------------------------------------------------------------
+ * 背景：此前每个页面各写一套宫格/列表样式，改一次要动 N 处，且视觉必然漂移。
+ * 这里按「内容性质」定两套统一实现，页面只管用：
+ *   A) .gm-grid / .gm-tile  → 导航层（等长短标签、数量稳定）
+ *   B) .cl-*                → 内容层（不等长记录、要横向比对/搜索/排序）
+ * 判定规则写死在此：等长 + 无需比对 = 宫格；不等长或需比对 = 列表。
+ * 维护约定：新增入口只加 .gm-tile，不新增样式；新增记录类型只加 .cl-*，不改宫格。
+ * ========================================================================== */
+
+/* ---- A) 宫格：导航层唯一实现 ---- */
+.gm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+.gm-grid.c2 { grid-template-columns: repeat(2, 1fr); }
+.gm-grid.c3 { grid-template-columns: repeat(3, 1fr); }
+.gm-grid.c4 { grid-template-columns: repeat(4, 1fr); }
+
+.gm-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 24rpx 6rpx 20rpx;
+  background: #FFFDF9;
+  border: 2rpx solid #FBE9F0;
+  border-radius: 30rpx;
+  box-shadow: 0 6rpx 18rpx rgba(216, 160, 190, 0.14);
+  overflow: hidden;
+}
+.gm-tile { transition: transform 0.15s ease, background-color 0.2s ease; }
+.gm-tile-hover { background: var(--card-2); transform: scale(0.94); }
+
+/* 宽砖：图标在左、文字在右，用于「全部功能 / 设置」这类次要但需显眼的入口 */
+.gm-tile.wide {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 16rpx;
+  padding: 22rpx 20rpx;
+}
+
+.gm-ic {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+/* 图标底色只做区分，不承担语义；均为浅档，深档文字/emoji 压在上面仍 ≥ AA */
+.gm-ic.t1 { background: #FFF3BF; }
+.gm-ic.t2 { background: #FFD6E0; }
+.gm-ic.t3 { background: #D0EBFF; }
+.gm-ic.t4 { background: #D8F5A2; }
+.gm-ic.t5 { background: #FFE8CC; }
+.gm-ic.t6 { background: #E9D8FD; }
+
+.gm-ic-tx {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.35;
+}
+.gm-tile.wide .gm-ic-tx { text-align: left; font-size: 26rpx; }
+
+/* ---- B) 卡片列表：内容层唯一实现 ---- */
+.cl {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 22rpx 0;
+  border-bottom: 1rpx dashed var(--sep);
+}
+.cl:last-child { border-bottom: 0; }
+
+/* 首字圆标：给同质记录一个可扫视的锚点，比纯文字行快 */
+.cl-av {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+.cl-av.a1 { background: var(--primary); }
+.cl-av.a2 { background: var(--pink); }
+.cl-av.a3 { background: var(--gold); }
+.cl-av.a4 { background: var(--wisteria); }
+
+.cl-main { flex: 1; min-width: 0; }
+.cl-t {
+  font-size: 29rpx;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+.cl-s {
+  font-size: 23rpx;
+  color: var(--text3);
+  margin-top: 4rpx;
+  line-height: 1.5;
+}
+.cl-end {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+/* 长文本：列表内截断，完整内容交给详情页（宫格装不下变长文本） */
+.cl-t.clamp,
+.cl-s.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* =====================  蘑菇吉祥物（纯 CSS，零图片）  ===================== */
+.mogu {
+  position: relative;
+  width: 112rpx; height: 112rpx;
+  flex-shrink: 0;
+}
+.mogu-stem {
+  position: absolute; left: 36rpx; top: 62rpx;
+  width: 40rpx; height: 48rpx;
+  background: #FFF8EE;
+  border-radius: 40% 40% 50% 50%;
+  box-shadow: 0 4rpx 10rpx rgba(220, 160, 140, 0.25);
+}
+.mogu-cap {
+  position: absolute; left: 0; top: 0;
+  width: 112rpx; height: 67rpx;
+  background: #FF8FAB;
+  border-radius: 112rpx 112rpx 19rpx 19rpx;
+}
+.mogu-dot {
+  position: absolute; width: 15rpx; height: 15rpx;
+  background: #fff; border-radius: 50%;
+}
+.mogu-eye {
+  position: absolute; top: 75rpx;
+  width: 7rpx; height: 11rpx;
+  background: #4A3728; border-radius: 50%;
+  animation: moguBlink 4.2s ease-in-out infinite;
+}
+@keyframes moguBlink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%, 97% { transform: scaleY(0.1); }
+}
+/* 吉祥物待机轻摇（.mogu-bob 才启用，静态位置不受影响） */
+.mogu-bob { animation: moguBob 3.6s ease-in-out infinite; transform-origin: bottom center; }
+@keyframes moguBob {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+.mogu-blush {
+  position: absolute; top: 89rpx;
+  width: 13rpx; height: 8rpx;
+  background: #FFC2D4; border-radius: 50%;
+}
+.mogu-mouth {
+  position: absolute; left: 50rpx; top: 85rpx;
+  width: 13rpx; height: 8rpx;
+  border: 3rpx solid #4A3728; border-top: none;
+  border-radius: 0 0 13rpx 13rpx;
+}
+.mogu-arm {
+  position: absolute; right: 3rpx; top: 70rpx;
+  width: 21rpx; height: 11rpx;
+  background: #FFF8EE; border-radius: 11rpx;
+  transform: rotate(-38deg); transform-origin: left center;
+}
+
+/* 「小蘑菇说」气泡：通知/引导统一由吉祥物开口（调研规律 3：角色主导） */
+.mogu-bubble {
+  position: relative;
+  background: #fff;
+  border-radius: 30rpx;
+  padding: 20rpx 26rpx;
+  box-shadow: 0 8rpx 22rpx rgba(216, 160, 190, 0.20);
+}
+.mogu-bubble::before {
+  content: '';
+  position: absolute; top: -10rpx; left: 70rpx;
+  width: 24rpx; height: 24rpx;
+  background: #fff; border-radius: 6rpx;
+  transform: rotate(45deg);
+}
+.mogu-say {
+  display: block;
+  font-size: 26rpx;
+  color: #C92A5D;
+  margin-bottom: 4rpx;
+}
+.mogu-text {
+  display: block;
+  font-size: 25rpx;
+  color: #5B4650;
+  line-height: 1.7;
+}
+.mogu-tape {
+  position: absolute; top: -13rpx; right: 36rpx;
+  width: 70rpx; height: 22rpx;
+  background: rgba(255, 217, 61, 0.6);
+  border: 1rpx dashed rgba(224, 180, 0, 0.5);
+  border-radius: 4rpx;
+  transform: rotate(4deg);
+}
+
+/* 奶油主题：固定标题统一快乐体（子集外字符自动回退系统字体，动态数据安全） */
+.card-title { font-family: HappyZcool, "Yuanti SC", "PingFang SC", sans-serif; }
+
+/* ==========================================================================
+ * v3 清洁工具风（2026-09-16 用户拍板：对标 WorkBuddy 班主任工作台视频风格）
+ * 浅灰底 + 纯白卡 + 黑粗标题 + 模块级单一强调色；奶油渐变/花纹底/粉色阴影下线。
+ * 只覆写视觉层，不动 token 语义与类名契约，13 个页面零改动跟随。
+ * ========================================================================== */
+.card {
+  background: #FFFFFF;
+  border: 1rpx solid #ECEEF1;
+  border-radius: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(17, 24, 39, 0.04);
+}
+.card-accent::before, .card-pattern::after { content: none; }
+.pat-ichimatsu, .pat-asanoha, .pat-nami { background-image: none; }
+.div-nami, .div-ichimatsu { background-image: none; height: 0; margin: var(--sp-2) 0; }
+
+/* 标题/快乐体全部回系统黑粗体（快乐体仅留历史，不再上屏） */
+.title, .card-title, .f-happy {
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* 按钮：纯色无渐变无彩影 */
+.btn { background: var(--primary); box-shadow: none; }
+.btn-pressed { box-shadow: none; }
+.btn-pink { background: var(--pink); box-shadow: none; }
+.btn-ink { background: var(--ink-2); box-shadow: none; }
+
+/* 区块标题竖条/进度条/流光：去渐变 */
+.gm-sec-bar { background: var(--accent, var(--primary)); }
+.gm-progress-bar { background: var(--primary); }
+.gm-flow-bar { background: linear-gradient(100deg, transparent, rgba(17, 24, 39, 0.06), transparent); }
+
+/* 宫格砖/列表行：灰边灰影、实线分隔 */
+.gm-tile { border: 1rpx solid #ECEEF1; box-shadow: 0 2rpx 8rpx rgba(17, 24, 39, 0.03); }
+.cl { border-bottom: 1rpx solid #EFF1F3; }
+
+/* 气泡：白卡灰影、文字回正色、装饰胶带下线 */
+.mogu-bubble { box-shadow: 0 2rpx 12rpx rgba(17, 24, 39, 0.05); }
+.mogu-say { color: var(--text); }
+.mogu-text { color: var(--text2); }
+.mogu-tape { display: none; }

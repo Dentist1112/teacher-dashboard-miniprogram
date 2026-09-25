@@ -1,0 +1,161 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <!-- ================= 作业列表 ================= -->
+  <block wx:if="{{view === 'list'}}">
+    <view class="card header">
+      <view class="header-title">
+        <view class="title">作业管理</view>
+        <view class="muted">{{classTitle}}</view>
+      </view>
+      <view class="add-btn" bindtap="onAdd">+ 布置</view>
+    </view>
+
+    <view class="card summary">
+      <view class="sum-item">
+        <text class="sum-num">{{overview.total}}</text>
+        <text class="muted">全部作业</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-open">{{overview.openCount}}</text>
+        <text class="muted">进行中</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-pending">{{overview.pendingCount}}</text>
+        <text class="muted">待交人次</text>
+      </view>
+    </view>
+
+    <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+    <block wx:elif="{{list.length}}">
+      <view class="card hw" wx:for="{{list}}" wx:key="_id">
+        <view class="hw-main" data-id="{{item._id}}" bindtap="onOpenCheck">
+          <view class="hw-head">
+            <text class="subj-tag">{{item.subject}}</text>
+            <text class="hw-title">{{item.title}}</text>
+          </view>
+          <view wx:if="{{item.content}}" class="hw-content">{{item.content}}</view>
+          <view class="hw-meta">
+            <text class="muted">布置 {{item.assignDate}}</text>
+            <text class="due due-{{item.dcls}}">{{item.dueText}}</text>
+          </view>
+
+          <view class="prog-row">
+            <view class="prog-track">
+              <view class="prog-fill" style="width: {{item.pct}}%"></view>
+            </view>
+            <text class="prog-num">{{item.pct}}%</text>
+          </view>
+          <view class="cnt-row">
+            <text class="cnt cnt-yes">已交 {{item.yesCount}}</text>
+            <text class="cnt cnt-late">补交 {{item.lateCount}}</text>
+            <text class="cnt cnt-exempt">免交 {{item.exemptCount}}</text>
+            <text class="cnt cnt-no">未交 {{item.noCount}}</text>
+          </view>
+        </view>
+        <view class="hw-actions">
+          <view class="act check" data-id="{{item._id}}" bindtap="onOpenCheck">收交</view>
+          <view class="act edit" data-id="{{item._id}}" bindtap="onEdit">编辑</view>
+          <view class="act del" data-id="{{item._id}}" bindtap="onDelete">删除</view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:else class="card center-tip">
+      <view class="muted">还没布置作业，点右上角「+ 布置」</view>
+    </view>
+  </block>
+
+  <!-- ================= 逐人收交 ================= -->
+  <block wx:else>
+    <view class="card header">
+      <view class="back-btn" bindtap="onBackToList">‹ 返回</view>
+      <view class="header-title check-title">
+        <view class="title">{{current.subject}} · {{current.title}}</view>
+        <view class="muted">截止 {{current.dueDate}}　{{current.dueText}}</view>
+      </view>
+      <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="onSaveCheck">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+
+    <view class="card stat-card">
+      <view class="stat-item"><text class="stat-num">{{checkStats.yes}}</text><text class="muted">已交</text></view>
+      <view class="stat-item"><text class="stat-num">{{checkStats.late}}</text><text class="muted">补交</text></view>
+      <view class="stat-item"><text class="stat-num">{{checkStats.exempt}}</text><text class="muted">免交</text></view>
+      <view class="stat-item"><text class="stat-num">{{checkStats.no}}</text><text class="muted">未交</text></view>
+      <view class="stat-item"><text class="stat-num">{{checkStats.rate}}%</text><text class="muted">完成率</text></view>
+    </view>
+
+    <view class="card tool-bar">
+      <view class="tool-btn {{onlyPending ? 'active' : ''}}" bindtap="onToggleOnlyPending">
+        {{onlyPending ? '显示全部' : '只看未交'}}
+      </view>
+      <view class="tool-btn" bindtap="onMarkAllSubmitted">未交全标已交</view>
+    </view>
+
+    <view class="card hint-card">
+      <text class="muted">点学生行循环切换：未交 › 已交 › 补交 › 免交</text>
+    </view>
+
+    <view class="card list-card">
+      <block wx:for="{{rows}}" wx:key="_id">
+        <view wx:if="{{!onlyPending || item.status === '未交'}}"
+              class="check-row" data-id="{{item._id}}" bindtap="onToggleStatus">
+          <text class="row-no">{{item.studentNo}}</text>
+          <text class="row-name">{{item.name}}</text>
+          <text class="st st-{{item.scls}}">{{item.status}}</text>
+        </view>
+      </block>
+      <view wx:if="{{onlyPending && checkStats.no === 0}}" class="muted center-tip">全部交齐了</view>
+    </view>
+  </block>
+</view>
+
+<!-- ================= 布置/编辑表单 ================= -->
+<view wx:if="{{showForm}}" class="mask" catchtap="onFormCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">{{isEdit ? '编辑作业' : '布置作业'}}</view>
+
+    <view class="field">
+      <view class="field-label">科目</view>
+      <picker class="field-picker" range="{{subjects}}" value="{{subjectIndex}}" bindchange="onSubjectChange">
+        <view class="picker-text">{{subjects[subjectIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="field-label">标题</view>
+      <input class="field-input" type="text" value="{{form.title}}" data-field="title"
+             bindinput="onFormInput" placeholder="如 练习册 P32-P34" maxlength="40" />
+    </view>
+
+    <view class="field field-col">
+      <view class="field-label">要求</view>
+      <textarea class="field-textarea" value="{{form.content}}" data-field="content"
+                bindinput="onFormInput" placeholder="如 只做选择题，明早交组长" auto-height maxlength="200"></textarea>
+    </view>
+
+    <view class="field">
+      <view class="field-label">布置日</view>
+      <picker class="field-picker" mode="date" value="{{form.assignDate}}" bindchange="onAssignDateChange">
+        <view class="picker-text">{{form.assignDate}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <view class="field-label">截止日</view>
+      <picker class="field-picker" mode="date" value="{{form.dueDate}}" bindchange="onDueDateChange">
+        <view class="picker-text">{{form.dueDate}}</view>
+      </picker>
+    </view>
+
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onFormCancel">取消</view>
+      <view class="btn-save {{saving ? 'disabled' : ''}}" bindtap="onFormSave">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+  </view>
+</view>

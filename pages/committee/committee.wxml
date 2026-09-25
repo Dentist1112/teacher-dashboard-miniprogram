@@ -1,0 +1,108 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <view class="card header">
+    <view wx:if="{{view === 'pick'}}" class="back-btn" bindtap="onBackToList">‹ 岗位</view>
+    <view class="header-title">
+      <view class="title">{{view === 'pick' ? currentPost + ' 选人' : '班委名单'}}</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="save-btn {{dirtyFlag ? '' : 'save-idle'}}" bindtap="onSave">
+      {{saving ? '保存中…' : (dirtyFlag ? '保存' : '已同步')}}
+    </view>
+  </view>
+
+  <!-- ================= 岗位清单 ================= -->
+  <block wx:if="{{view === 'list'}}">
+    <view class="card summary">
+      <view class="sum-item">
+        <text class="sum-num">{{overview.filled}}</text>
+        <text class="muted">已定人</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-empty">{{overview.empty}}</text>
+        <text class="muted">空缺</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num {{overview.keyEmpty ? 'sum-warn' : ''}}">{{overview.keyEmpty}}</text>
+        <text class="muted">核心岗空缺</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num {{overview.multi ? 'sum-warn' : ''}}">{{overview.multi}}</text>
+        <text class="muted">兼岗过多</text>
+      </view>
+    </view>
+
+    <view class="card tool-card">
+      <view class="tool-btns">
+        <view class="tool-btn" bindtap="onRecommend">按积分推荐</view>
+        <view class="tool-btn tool-danger" bindtap="onClearAll">全部清空</view>
+      </view>
+      <view class="tip">点某个岗位挑人，每个岗位最多安排 2 人。点人名旁的 ✕ 撤掉这个人；长按整行清空该岗位。改完记得点右上「保存」。</view>
+    </view>
+
+    <view wx:if="{{warnList.length}}" class="card warn-card">
+      <view class="card-title warn-title">⚠ 需要处理（{{warnList.length}} 处）</view>
+      <view class="warn-line" wx:for="{{warnList}}" wx:key="key">{{item.text}}</view>
+    </view>
+
+    <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+    <block wx:else>
+      <view class="card post-card">
+        <view class="card-title">岗位与人员</view>
+        <view class="post-line {{item.isKey ? 'post-key' : ''}}"
+              wx:for="{{posts}}" wx:key="post"
+              data-post="{{item.post}}" bindtap="onOpenPost" bindlongpress="onVacate">
+          <text class="post-tag post-{{item.pcls}}">{{item.post}}</text>
+          <view class="post-people">
+            <view class="post-person" wx:for="{{item.holders}}" wx:for-item="h" wx:key="studentId">
+              <text class="post-name">{{h.name}}</text>
+              <text class="muted post-no">{{h.studentNo}}</text>
+              <text class="post-pts">{{h.points}}分</text>
+              <text class="person-x" catchtap="onVacate" data-post="{{item.post}}" data-sid="{{h.studentId}}">✕</text>
+            </view>
+            <text wx:if="{{item.empty}}" class="post-vacant">空缺 · 点这里挑人</text>
+            <text wx:elif="{{!item.full}}" class="post-add">＋ 再加一人</text>
+            <text wx:else class="post-full">已满 2 人</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{idleList.length}}" class="card idle-card">
+        <view class="card-title">未任职（{{idleList.length}} 人，按积分排序）</view>
+        <view class="chip-wrap">
+          <view class="chip chip-idle" wx:for="{{idleList}}" wx:key="_id">
+            {{item.name}} <text class="chip-no">{{item.points}}分</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ================= 挑人 ================= -->
+  <block wx:else>
+    <view class="card pick-bar">
+      正在为 <text class="pick-post post-{{currentPcls}}">{{currentPost}}</text> 挑人<block wx:if="{{currentCount >= 2}}">（已满 2 人，请先在岗位页撤掉一人）</block><block wx:else>（已 {{currentCount}}/2 人，点名字追加）</block>。
+    </view>
+
+    <view class="card">
+      <view class="card-title">
+        候选（按积分降序）
+        <text class="filter-btn" bindtap="onToggleFilter">{{poolFilter === 'all' ? '只看未任职' : '看全班'}}</text>
+      </view>
+      <view class="chip-wrap">
+        <view class="chip pool-chip {{item.isCurrent ? 'chip-cur' : ''}} {{item.holds ? 'chip-hold' : ''}}"
+              wx:for="{{pool}}" wx:key="_id" data-id="{{item._id}}" bindtap="onAssign">
+          {{item.name}} <text class="chip-no">{{item.points}}分</text>
+          <text wx:if="{{item.holds}}" class="chip-hold-num">兼{{item.holds}}</text>
+        </view>
+      </view>
+      <view wx:if="{{!pool.length}}" class="muted center-tip">没有符合条件的候选人</view>
+    </view>
+  </block>
+</view>

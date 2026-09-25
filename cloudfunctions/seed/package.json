@@ -1,0 +1,7 @@
+{
+  "name": "seed",
+  "version": "1.0.0",
+  "description": "灌入示例数据用于界面预览",
+  "main": "index.js",
+  "dependencies": { "wx-server-sdk": "latest" }
+}

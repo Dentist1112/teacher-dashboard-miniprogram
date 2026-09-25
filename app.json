@@ -1,0 +1,60 @@
+{
+  "cloud": true,
+  "pages": [
+    "pages/dashboard/dashboard",
+    "pages/roster/roster",
+    "pages/attendance/attendance",
+    "pages/announcement/announcement",
+    "pages/todo/todo",
+    "pages/grades/grades",
+    "pages/all/all",
+    "pages/settings/settings",
+    "pages/rewards/rewards",
+    "pages/homework/homework",
+    "pages/profile/profile",
+    "pages/seats/seats",
+    "pages/duty/duty",
+    "pages/schedule/schedule",
+    "pages/committee/committee",
+    "pages/login/login",
+    "pages/index/index",
+    "pages/analytics/analytics"
+  ],
+  "window": {
+    "navigationBarTitleText": "蘑菇老师",
+    "navigationBarBackgroundColor": "#FDF6F0",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FDF6F0"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#8CA69B",
+    "selectedColor": "#0B7A62",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/dashboard/dashboard",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/roster/roster",
+        "text": "名单"
+      },
+      {
+        "pagePath": "pages/grades/grades",
+        "text": "成绩"
+      },
+      {
+        "pagePath": "pages/attendance/attendance",
+        "text": "考勤"
+      },
+      {
+        "pagePath": "pages/announcement/announcement",
+        "text": "通知"
+      }
+    ]
+  },
+  "style": "v2",
+  "entryPagePath": "pages/dashboard/dashboard"
+}

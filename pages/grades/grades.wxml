@@ -1,0 +1,155 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <view class="card header">
+    <view class="header-title">
+      <view class="title">成绩录入</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="header-actions">
+      <view class="ai-btn" bindtap="onAiPhoto">📷 拍照录</view>
+      <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="onSave">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+  </view>
+
+  <!-- AI 识别提示条：识别后显示匹配情况，点 × 可清除高亮 -->
+  <view wx:if="{{aiNote}}" class="ai-note">
+    <text class="ai-note-text">{{aiNote}}</text>
+    <text class="ai-note-close" bindtap="onClearAi">×</text>
+  </view>
+  <!-- 没配密钥时给的手动兜底入口（始终可用） -->
+  <view class="card ai-tip" bindtap="onPasteTap">
+    <text class="ai-tip-main">📋 也可「粘贴名单文本」批量填分</text>
+    <text class="ai-tip-sub">格式：每行「姓名 分数」，无需密钥</text>
+  </view>
+
+  <!-- 选考试 + 科目 -->
+  <view class="card picker-card">
+    <view class="pick-row">
+      <text class="pick-label">考试</text>
+      <picker class="pick-body" range="{{exams}}" value="{{examIndex}}" bindchange="onExamChange">
+        <view class="pick-text">{{exams[examIndex]}}</view>
+      </picker>
+      <text class="pick-edit" bindtap="onEditExam">改</text>
+    </view>
+    <view class="pick-row">
+      <text class="pick-label">科目</text>
+      <picker class="pick-body" range="{{subjects}}" value="{{subjectIndex}}" bindchange="onSubjectChange">
+        <view class="pick-text">{{subjects[subjectIndex]}}</view>
+      </picker>
+    </view>
+    <view class="pick-row">
+      <text class="pick-label">满分</text>
+      <input class="pick-input" type="number" value="{{full}}" bindinput="onFullInput" placeholder="100" />
+      <text class="muted pick-hint">1-{{maxFull}}，超过满分会被拦下</text>
+    </view>
+  </view>
+
+  <view wx:if="{{fullWarn}}" class="card full-warn">
+    <text class="full-warn-text">⚠ {{fullWarn}}（当前统计按 100 分基准估算，保存会被拦下）</text>
+  </view>
+
+  <!-- v0.9.5 名次波动：只在选中最近一次考试、且有人进退步≥8名时出现 -->
+  <view wx:if="{{wave}}" class="card wave-card">
+    <view class="card-title f-happy">⚠ 名次波动</view>
+    <view class="muted wave-sub">较「{{wave.prevExam}}」进退步 ≥8 名</view>
+    <view wx:if="{{wave.down.length}}" class="wave-sec">
+      <text class="wave-tag wave-down">下滑</text>
+      <view class="wave-list">
+        <view class="wave-item" wx:for="{{wave.down}}" wx:for-item="w" wx:key="id">
+          <text class="wave-name">{{w.name}}</text>
+          <text class="wave-path">{{w.path}}</text>
+          <text class="wave-n wave-down">↓{{w.n}}名</text>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{wave.up.length}}" class="wave-sec">
+      <text class="wave-tag wave-up">进步</text>
+      <view class="wave-list">
+        <view class="wave-item" wx:for="{{wave.up}}" wx:for-item="w" wx:key="id">
+          <text class="wave-name">{{w.name}}</text>
+          <text class="wave-path">{{w.path}}</text>
+          <text class="wave-n wave-up">↑{{w.n}}名</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计 -->
+  <view wx:if="{{stats.entered > 0}}" class="card stat-card">
+    <view class="stat-item"><text class="stat-num">{{stats.entered}}</text><text class="muted">已录</text></view>
+    <view class="stat-item"><text class="stat-num">{{stats.avg}}</text><text class="muted">平均</text></view>
+    <view class="stat-item"><text class="stat-num">{{stats.max}}</text><text class="muted">最高</text></view>
+    <view class="stat-item"><text class="stat-num">{{stats.min}}</text><text class="muted">最低</text></view>
+    <view class="stat-item"><text class="stat-num">{{stats.passRate}}%</text><text class="muted">及格率</text></view>
+  </view>
+
+  <!-- 分数段分布 -->
+  <view wx:if="{{stats.entered > 0}}" class="card">
+    <view class="card-title">分数段分布</view>
+    <view class="bar-row" wx:for="{{buckets}}" wx:key="label">
+      <text class="bar-label">{{item.label}}</text>
+      <view class="bar-track">
+        <view class="bar-fill bar-{{item.cls}}" style="width: {{item.pct}}%"></view>
+      </view>
+      <text class="bar-num">{{item.count}}</text>
+    </view>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:elif="{{rows.length}}">
+    <view class="card list-card">
+      <view class="grade-row" wx:for="{{rows}}" wx:key="_id">
+        <view class="stu-info">
+          <text class="row-no">{{item.studentNo}}</text>
+          <text class="row-name">{{item.name}}</text>
+          <text wx:if="{{item.rankText}}" class="rank-tag">{{item.rankText}}</text>
+          <text wx:if="{{item.ai}}" class="ai-badge {{item.aiLow ? 'low' : ''}}">AI</text>
+        </view>
+        <text wx:if="{{item.invalid}}" class="bad-why">{{item.invalidWhy}}</text>
+        <input class="score-input {{item.invalid ? 'invalid' : ''}} {{item.aiLow ? 'ai-low' : ''}} {{item._id === focusInvalidId ? 'focus-bad' : ''}}" type="digit"
+               value="{{item.scoreInput}}" data-id="{{item._id}}"
+               bindinput="onScoreInput" placeholder="—" />
+      </view>
+    </view>
+  </block>
+
+  <template is="gmEmpty" wx:else data="{{ show: true, title: '还没有学生', desc: '请先在「名单」页添加学生' }}"/>
+</view>
+
+<!-- 改考试名 -->
+<view wx:if="{{showExamForm}}" class="mask" catchtap="onExamCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">考试名称</view>
+    <view class="field">
+      <view class="field-label">名称</view>
+      <input class="field-input" type="text" value="{{examInput}}" bindinput="onExamInput"
+             placeholder="如 第三次月考" maxlength="20" />
+    </view>
+    <view class="muted exam-tip">已有考试：{{exams}}</view>
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onExamCancel">取消</view>
+      <view class="btn-save" bindtap="onExamConfirm">确定</view>
+    </view>
+  </view>
+</view>
+
+<!-- 粘贴名单文本：无需密钥的批量填分兜底 -->
+<view wx:if="{{aiPasteShow}}" class="mask" catchtap="onPasteCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">粘贴名单文本</view>
+    <view class="muted" style="margin-bottom:14rpx;">每行一条，格式「姓名 分数」，例如：</view>
+    <view class="muted" style="margin-bottom:14rpx;">张三 95　李四 88　王五 （缺考留空）</view>
+    <textarea class="paste-area" value="{{aiPasteText}}" bindinput="onPasteInput"
+              placeholder="在此粘贴或手输…" maxlength="2000" auto-height />
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onPasteCancel">取消</view>
+      <view class="btn-save" bindtap="onPasteConfirm">填入选中</view>
+    </view>
+  </view>
+</view>

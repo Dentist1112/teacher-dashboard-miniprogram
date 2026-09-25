@@ -1,0 +1,136 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <view class="card header">
+    <view wx:if="{{view === 'day'}}" class="back-btn" bindtap="onBackToWeek">‹ 周表</view>
+    <view class="header-title">
+      <view class="title">{{view === 'day' ? dayLabel + ' 课表' : '课程表'}}</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="save-btn {{dirtyFlag ? '' : 'save-idle'}}" bindtap="onSave">
+      {{saving ? '保存中…' : (dirtyFlag ? '保存' : '已同步')}}
+    </view>
+  </view>
+
+  <!-- ================= 周表 ================= -->
+  <block wx:if="{{view === 'week'}}">
+    <view class="card summary">
+      <view class="sum-item">
+        <text class="sum-num">{{overview.filled}}</text>
+        <text class="muted">已排节次</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num sum-empty">{{overview.empty}}</text>
+        <text class="muted">空课</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num">{{overview.subjects}}</text>
+        <text class="muted">科目数</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num {{overview.conflicts ? 'sum-warn' : ''}}">{{overview.conflicts}}</text>
+        <text class="muted">不合理</text>
+      </view>
+    </view>
+
+    <view class="card tool-card">
+      <view class="tool-btns">
+        <view class="tool-btn" bindtap="onApplyTemplate">套用模板</view>
+        <view class="tool-btn tool-danger" bindtap="onClearAll">全部清空</view>
+      </view>
+      <view wx:if="{{swapFrom}}" class="swap-bar">
+        <text class="swap-bar-text">已选 <text class="swap-bar-key">{{swapFrom}}</text>，再点一个格子 = 交换/移动，点同一格或右侧取消</text>
+        <text class="swap-bar-cancel" bindtap="onCancelSwap">取消</text>
+      </view>
+      <view wx:elif="{{fillTarget}}" class="swap-bar">
+        <text class="swap-bar-text">正在给 <text class="swap-bar-key">{{fillTargetLabel}}</text> 填课，下面挑一个科目即可；点同一格或右侧取消</text>
+        <text class="swap-bar-cancel" bindtap="onCancelSwap">取消</text>
+      </view>
+      <view wx:elif="{{pickedSubject}}" class="swap-bar">
+        <text class="swap-bar-text">已选 <text class="swap-bar-key">{{pickedSubject}}</text>，点任意格子填入；长按格子清空</text>
+        <text class="swap-bar-cancel" bindtap="onCancelSwap">取消</text>
+      </view>
+      <view wx:else class="tip">下面挑科目 → 点格子填入；不挑科目时点两格 = 互换/移动；长按格子清空。改完点右上「保存」。</view>
+    </view>
+
+    <view wx:if="{{conflictList.length}}" class="card warn-card">
+      <view class="card-title warn-title">⚠ 排课不合理（{{conflictList.length}} 处）</view>
+      <view class="warn-line" wx:for="{{conflictList}}" wx:key="key">{{item.text}}</view>
+    </view>
+
+    <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+    <block wx:else>
+      <!-- 周表网格：左侧节次标签 + 5 天列 -->
+      <view class="card grid-card">
+        <view class="grid-head">
+          <view class="grid-corner"></view>
+          <view class="grid-day {{day.isToday ? 'grid-today' : ''}}"
+                wx:for="{{week}}" wx:for-item="day" wx:key="d"
+                data-d="{{day.d}}" bindtap="onOpenDay">
+            <text class="grid-day-label">{{day.label}}</text>
+            <text class="grid-day-date">{{day.dateLabel}}</text>
+          </view>
+        </view>
+        <view class="grid-row row-{{p.part}}" wx:for="{{periods}}" wx:for-item="p" wx:key="p">
+          <view class="grid-period">{{p.part === 'noon' ? '延' : p.p}}</view>
+          <view class="grid-cell {{w.cells[index].empty ? 'cell-empty' : 'sub-' + w.cells[index].scls}} {{swapFrom === (w.d + '@' + p.p) ? 'cell-picked' : ''}} {{fillTarget === (w.d + '@' + p.p) ? 'cell-target' : ''}}"
+                wx:for="{{week}}" wx:for-item="w" wx:for-index="wi" wx:key="d"
+                data-d="{{w.d}}" data-p="{{p.p}}" bindtap="onCellPick" bindlongpress="onClearWeekCell">
+            <text wx:if="{{!w.cells[index].empty}}" class="cell-sub">{{w.cells[index].subject}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 科目池搬到周表：老师改课不用再点进单日页（用户反馈 2026-09-06）-->
+      <view class="card pool-card">
+        <view class="card-title">
+          挑一个科目<text wx:if="{{pickedSubject}}" class="picked-hint">（已选 {{pickedSubject}}，点上面任意格子填入）</text><text wx:elif="{{fillTarget}}" class="picked-hint">（点科目填入 {{fillTargetLabel}}）</text>
+        </view>
+        <view class="chip-wrap">
+          <view class="chip pool-chip {{item === pickedSubject ? 'chip-picked' : ''}}"
+                wx:for="{{subjects}}" wx:key="*this"
+                data-subject="{{item}}" bindtap="onPickSubject">{{item}}</view>
+        </view>
+      </view>
+
+      <view wx:if="{{subjectStat.length}}" class="card stat-card">
+        <view class="card-title">每科周课时</view>
+        <view class="chip-wrap">
+          <view class="chip sub-{{item.scls}}" wx:for="{{subjectStat}}" wx:key="subject">
+            {{item.subject}} <text class="chip-num">{{item.count}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- ================= 单日编排 ================= -->
+  <block wx:else>
+    <view class="card day-card">
+      <view class="card-title">{{dayLabel}} 各节次（点格子填入，长按清掉）</view>
+      <view class="slot-line slot-{{item.part}} {{fillTarget === (currentDay + '@' + item.p) ? 'cell-target' : ''}}"
+            wx:for="{{dayCells}}" wx:key="p"
+            data-p="{{item.p}}" bindtap="onTapCell" bindlongpress="onClearCell">
+        <text class="slot-label">{{item.label}}</text>
+        <view wx:if="{{!item.empty}}" class="slot-sub sub-{{item.scls}}">{{item.subject}}</view>
+        <text wx:else class="slot-blank">空课</text>
+      </view>
+    </view>
+
+    <view class="card pool-card">
+      <view class="card-title">
+        挑一个科目<text wx:if="{{pickedSubject}}" class="picked-hint">（已选 {{pickedSubject}}，点上面的节次填入）</text><text wx:elif="{{fillTarget}}" class="picked-hint">（点科目填入 {{fillTargetLabel}}）</text>
+      </view>
+      <view class="chip-wrap">
+        <view class="chip pool-chip {{item === pickedSubject ? 'chip-picked' : ''}}"
+              wx:for="{{subjects}}" wx:key="*this"
+              data-subject="{{item}}" bindtap="onPickSubject">{{item}}</view>
+      </view>
+    </view>
+  </block>
+</view>

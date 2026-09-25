@@ -1,0 +1,212 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>当前未连接云数据库（测试号/未配置 envId）。界面可正常预览，但数据为空。配置真实 AppID + 云环境后自动显示真实数据。
+  </view>
+  <view class="mg-scene">
+  <view class="mg-head">
+    <image class="mogu-img mogu-bob" src="/assets/img/mogu.png" mode="aspectFit"/>
+    <view class="head-main">
+      <view class="mg-title f-happy"><text class="mg-c1">蘑</text><text class="mg-c2">菇</text><text class="mg-c3">老</text><text class="mg-c4">师</text></view>
+      <text class="mg-sub">🍄 {{classTitle}}</text>
+    </view>
+    <!-- 身份小卡：点进设置页可改。不显示"未登录"字样 —— 跳过设置的老师看到那三个字会以为功能坏了 -->
+    <view class="me-chip" bindtap="goSettings">
+      <image wx:if="{{meAvatar}}" class="me-chip-av" src="{{meAvatar}}" mode="aspectFill"/>
+      <view wx:else class="me-chip-ph">👤</view>
+      <text class="me-chip-tx">{{meName || '设置身份'}}</text>
+    </view>
+  </view>
+  </view>
+
+  <view class="mogu-bubble">
+    <view class="mogu-tape"></view>
+    <text class="mogu-say f-happy">小蘑菇说</text>
+    <text class="mogu-text">{{greeting}}呀～今天是 {{today}}，{{announcements.length > 0 ? '有 ' + announcements.length + ' 条通知等着你看哦！' : '今天也要元气满满哟！'}} ✨</text>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 5 }}"/>
+
+  <block wx:else>
+    <!-- 学生总数 -->
+    <view class="card stat-card card-pattern">
+      <view class="stat-row">
+        <text class="stat-label f-happy">学生总数</text>
+        <text class="stat-num f-happy">{{students.length}}</text>
+        <text class="stat-unit">人</text>
+      </view>
+      <view class="stat-badge-row">
+        <view class="stat-badge">🍄 {{classTitle}}</view>
+        <view class="report-btn" bindtap="onCopyReport" hover-class="report-btn-hover">📋 复制日报</view>
+      </view>
+    </view>
+
+    <!-- 常用功能：等长标签、数量稳定 → 用宫格（识别而非回忆，一眼扫全） -->
+    <view class="card">
+      <view class="card-head">
+        <text class="card-title f-happy">🌟 常用功能</text>
+        <text class="link-more" bindtap="goAll">全部 15 个 ›</text>
+      </view>
+
+      <view class="gm-grid c4">
+        <view class="gm-tile quick-btn link-grades-quick" bindtap="goGrades"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t1">📈</view>
+          <text class="gm-ic-tx f-happy">成绩录入</text>
+        </view>
+        <view class="gm-tile quick-btn link-rewards-quick" bindtap="goRewards"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t2">⭐</view>
+          <text class="gm-ic-tx f-happy">奖惩登记</text>
+        </view>
+        <view class="gm-tile quick-btn link-homework-quick" bindtap="goHomework"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t3">📝</view>
+          <text class="gm-ic-tx f-happy">作业管理</text>
+        </view>
+        <view class="gm-tile quick-btn link-profile-quick" bindtap="goProfile"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t4">🗂️</view>
+          <text class="gm-ic-tx f-happy">学生档案</text>
+        </view>
+        <view class="gm-tile quick-btn link-analytics-quick" bindtap="goAnalytics"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t2">📊</view>
+          <text class="gm-ic-tx f-happy">数据分析</text>
+        </view>
+        <view class="gm-tile quick-btn link-seats-quick" bindtap="goSeats"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t5">🪑</view>
+          <text class="gm-ic-tx f-happy">座位排布</text>
+        </view>
+        <view class="gm-tile quick-btn link-duty-quick" bindtap="goDuty"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t6">🧹</view>
+          <text class="gm-ic-tx f-happy">值日轮排</text>
+        </view>
+        <view class="gm-tile quick-btn link-schedule-quick" bindtap="goSchedule"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t1">📚</view>
+          <text class="gm-ic-tx f-happy">课程安排</text>
+        </view>
+        <view class="gm-tile quick-btn link-committee-quick" bindtap="goCommittee"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t2">🎖️</view>
+          <text class="gm-ic-tx f-happy">班委名单</text>
+        </view>
+      </view>
+
+      <view class="gm-grid c3 quick-foot">
+        <view class="gm-tile wide quick-btn link-todo-quick" bindtap="goTodo"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t4">✅</view>
+          <text class="gm-ic-tx f-happy">待办清单</text>
+        </view>
+        <view class="gm-tile wide quick-btn link-all-quick" bindtap="goAll"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t6">🧭</view>
+          <text class="gm-ic-tx f-happy">全部功能</text>
+        </view>
+        <view class="gm-tile wide quick-btn link-settings-quick" bindtap="goSettings"
+              hover-class="gm-tile-hover" hover-stay-time="80">
+          <view class="gm-ic t3">⚙️</view>
+          <text class="gm-ic-tx f-happy">数据设置</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 健康需注意：放在最靠前，漏掉过敏史是真事故 -->
+    <view wx:if="{{healthCount > 0}}" class="card health-card">
+      <view class="card-head">
+        <text class="card-title health-title f-happy">⚠ 健康需注意（{{healthCount}} 人）</text>
+        <text class="link-more link-profile" bindtap="goProfile">全部 ›</text>
+      </view>
+      <view wx:for="{{healthAlerts}}" wx:key="_id" class="health-line"
+            data-id="{{item._id}}" bindtap="goProfileOf">
+        <text class="health-name">{{item.name}}</text>
+        <text class="health-body">{{item.health}}</text>
+      </view>
+    </view>
+
+    <view class="grid">
+      <!-- 最新通知 -->
+      <view class="card grid-card">
+        <view class="card-head">
+          <text class="card-title f-happy">📢 最新通知</text>
+          <text class="muted">{{announcements.length}} 条</text>
+        </view>
+        <template is="gmEmpty" data="{{ show: announcements.length === 0, title: '暂无通知', desc: '发布后会出现在这里' }}"/>
+        <view wx:for="{{announcements}}" wx:key="_id" class="line-item">
+          <view class="line-title">
+            <text wx:if="{{item.priority}}" class="badge badge-{{item.pcls}}">{{item.priority}}</text>
+            <text>{{item.title}}</text>
+          </view>
+          <text class="muted">{{item.date}}</text>
+        </view>
+      </view>
+
+      <!-- 今日考勤异常 -->
+      <view class="card grid-card">
+        <view class="card-head">
+          <text class="card-title f-happy">📅 今日考勤</text>
+          <text class="muted">{{today}}</text>
+        </view>
+        <template is="gmEmpty" data="{{ show: attendance.length === 0, title: '今日全员正常', desc: '迟到/请假会显示在这里' }}"/>
+        <view wx:for="{{attendance}}" wx:key="_id" class="line-item">
+          <text class="line-title">{{item.studentName || item.studentId}}</text>
+          <text class="badge badge-warn">{{item.status}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 今日待办：未完成里挑今天到期/逾期的，点进去就是待办页 -->
+    <view class="card todo-card">
+      <view class="card-head">
+        <text class="card-title f-happy">✅ 今日待办</text>
+        <text class="link-more link-todo" bindtap="goTodo">{{todoOpen > 0 ? '还剩 ' + todoOpen + ' 件 ›' : '全部做完 ›'}}</text>
+      </view>
+      <template is="gmEmpty" data="{{ show: todoToday.length === 0, title: '今天没有要赶的事', desc: '想到什么，去待办清单记一条' }}"/>
+      <view wx:for="{{todoToday}}" wx:key="_id" class="todo-line" data-id="{{item._id}}" bindtap="goTodo">
+        <view class="todo-dot {{item.overdue ? 'is-overdue' : ''}}"></view>
+        <text class="todo-line-tx {{item.overdue ? 'is-overdue' : ''}}">{{item.title}}</text>
+        <text class="todo-line-date d-{{item.cls}}">{{item.dueText}}</text>
+      </view>
+    </view>
+
+    <!-- 进行中的作业 -->
+    <view class="card">
+      <view class="card-head">
+        <text class="card-title f-happy">📝 进行中的作业</text>
+        <text class="link-more link-homework" bindtap="goHomework">管理 ›</text>
+      </view>
+      <template is="gmEmpty" data="{{ show: homework.length === 0, title: '暂无进行中的作业', desc: '布置作业后会显示未交人数' }}"/>
+      <view wx:for="{{homework}}" wx:key="_id" class="hw-line" data-id="{{item._id}}" bindtap="goHomework">
+        <view class="hw-line-main">
+          <text class="line-title">{{item.subject}} · {{item.title}}</text>
+          <text class="hw-due hw-{{item.dcls}}">{{item.dueText}}</text>
+        </view>
+        <text class="hw-pending">未交 {{item.noCount}}</text>
+      </view>
+      <view wx:if="{{hwPending > 0}}" class="hw-total muted">全部进行中作业共 {{hwPending}} 人次待交</view>
+    </view>
+
+    <!-- 最近奖惩 -->
+    <view class="card">
+      <view class="card-head">
+        <text class="card-title f-happy">⭐ 最近奖惩</text>
+        <text class="link-more link-rewards" bindtap="goRewards">管理 ›</text>
+      </view>
+      <template is="gmEmpty" data="{{ show: rewards.length === 0, title: '暂无奖惩记录', desc: '登记奖励或惩戒后会显示积分' }}"/>
+      <view wx:for="{{rewards}}" wx:key="_id" class="reward-row">
+        <view class="reward-main">
+          <text class="line-title">{{item.studentName || item.studentId}}</text>
+          <text class="muted">{{item.reason}}</text>
+        </view>
+        <text class="points {{item.points >= 0 ? 'points-add' : 'points-sub'}}">
+          {{item.points >= 0 ? '+' : ''}}{{item.points}}
+        </text>
+      </view>
+    </view>
+  </block>
+</view>

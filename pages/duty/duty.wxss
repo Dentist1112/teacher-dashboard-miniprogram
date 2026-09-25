@@ -1,0 +1,129 @@
+/* 流派色：duty → 暗金（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #8A6A1A; }
+
+/* 选择器必须全 ASCII：中文类名会让整份 wxss 编译失败（岗位名已在 js 里映射成 JOB_CLS） */
+.header { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.header-title { flex: 1; min-width: 0; }
+.back-btn { color: var(--primary); font-size: 28rpx; padding: 10rpx 16rpx 10rpx 0; flex-shrink: 0; }
+.save-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 34rpx;
+  font-size: 27rpx;
+  flex-shrink: 0;
+}
+.save-btn.save-idle { background: var(--wash); color: var(--text3); }
+.center-tip { text-align: center; padding: 48rpx 24rpx; }
+.card-title { font-size: 30rpx; font-weight: 600; color: var(--indigo); margin-bottom: 18rpx; }
+
+/* 概览 */
+.summary { display: flex; }
+.sum-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4rpx; }
+.sum-num { font-size: 32rpx; font-weight: 700; color: var(--text); }
+.sum-miss { color: var(--primary); }
+
+/* 工具条 */
+.tool-btns { display: flex; gap: 12rpx; }
+.tool-btn {
+  flex: 1;
+  text-align: center;
+  font-size: 25rpx;
+  padding: 16rpx 0;
+  border-radius: 10rpx;
+  background: #F2F2F5;
+  color: var(--indigo);
+}
+.tool-btn.tool-danger { color: var(--primary); }
+.tip { margin-top: 16rpx; font-size: 22rpx; color: #6E6E76; line-height: 1.6; }
+
+/* 未排到告警卡 */
+.miss-card { border-left: 8rpx solid var(--primary); background: rgba(185,65,46,0.05); }
+.miss-title { color: var(--primary); }
+
+.picked-bar {
+  background: #FFF6DC;
+  border: 1rpx solid #5A4712;
+  color: #5A4712;
+  font-size: 25rpx;
+  padding: 18rpx 24rpx;
+}
+.picked-name { font-weight: 700; color: var(--primary); }
+
+/* 周表：每天一张卡 */
+.day-card { padding: 20rpx 24rpx; }
+.day-today { border-left: 8rpx solid var(--bamboo); background: rgba(30, 122, 71, 0.05); }
+.day-head { display: flex; align-items: center; gap: 12rpx; margin-bottom: 16rpx; }
+.day-label { font-size: 30rpx; font-weight: 600; color: var(--indigo); }
+/* 日历日期：老师反馈只有「周一」记不住是哪天（2026-09-06）*/
+.day-date { font-size: 22rpx; color: #5F5B51; }
+.today-flag {
+  font-size: 20rpx;
+  color: #fff;
+  background: var(--bamboo);
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+}
+.day-total { margin-left: auto; }
+.job-line { display: flex; align-items: center; gap: 14rpx; padding: 8rpx 0; }
+.job-tag {
+  font-size: 21rpx;
+  color: #fff;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+  min-width: 108rpx;
+  text-align: center;
+}
+.job-sweep { background: var(--indigo); }
+.job-board { background: var(--bamboo); }
+.job-trash { background: var(--gold); }
+.job-desk { background: var(--wisteria); }
+.job-lock { background: var(--primary); }
+.job-people { flex: 1; display: flex; flex-wrap: wrap; gap: 10rpx; }
+.person { font-size: 25rpx; color: var(--text); }
+.job-empty { font-size: 23rpx; color: #6E6A5E; }
+
+/* 单日编排 */
+.slot { padding: 16rpx 0; border-bottom: 1rpx solid #F0EBE0; }
+.slot:last-child { border-bottom: none; }
+.slot-head { display: flex; align-items: center; gap: 14rpx; margin-bottom: 12rpx; }
+.slot-empty { font-size: 23rpx; }
+
+/* chips */
+.chip-wrap { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.chip {
+  font-size: 24rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  background: #F2F2F5;
+  color: var(--text);
+  border: 1rpx solid transparent;
+}
+.chip-no { font-size: 19rpx; color: #5E5B52; }
+.chip-sel { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chip-sel .chip-no { color: rgba(255,255,255,0.75); }
+.chip-busy { border-left: 6rpx solid var(--gold); }
+.chip-zero { border-left: 6rpx solid var(--primary); }
+.chip-miss { background: rgba(185,65,46,0.1); color: var(--primary); }
+.chip-miss .chip-no { color: rgba(185,65,46,0.6); }
+.chip-on-duty { background: rgba(46,74,107,0.1); color: var(--indigo); }
+.chip-x { color: var(--primary); font-weight: 700; margin-left: 4rpx; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }

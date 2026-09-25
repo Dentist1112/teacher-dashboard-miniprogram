@@ -1,0 +1,148 @@
+/* 流派色：committee → 墨绿（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #B0463C; }
+
+/* 选择器必须全 ASCII：中文类名会让整份 wxss 编译失败（岗位名已在 js 里映射成 POST_CLS） */
+.header { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.header-title { flex: 1; min-width: 0; }
+.back-btn { color: var(--primary); font-size: 28rpx; padding: 10rpx 16rpx 10rpx 0; flex-shrink: 0; }
+.save-btn {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999rpx;
+  padding: 14rpx 34rpx;
+  font-size: 27rpx;
+  flex-shrink: 0;
+}
+.save-btn.save-idle { background: var(--wash); color: var(--text3); }
+.center-tip { text-align: center; padding: 48rpx 24rpx; }
+.card-title { font-size: 30rpx; font-weight: 600; color: var(--indigo); margin-bottom: 18rpx; }
+
+/* 概览 */
+.summary { display: flex; }
+.sum-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4rpx; }
+.sum-num { font-size: 32rpx; font-weight: 700; color: var(--text); }
+.sum-empty { color: var(--gold); }
+.sum-warn { color: var(--primary); }
+
+/* 工具条 */
+.tool-btns { display: flex; gap: 12rpx; }
+.tool-btn {
+  flex: 1;
+  text-align: center;
+  font-size: 25rpx;
+  padding: 16rpx 0;
+  border-radius: 10rpx;
+  background: #F2F2F5;
+  color: var(--indigo);
+}
+.tool-btn.tool-danger { color: var(--primary); }
+.tip { margin-top: 16rpx; font-size: 22rpx; color: #6E6E76; line-height: 1.6; }
+
+/* 告警卡 */
+.warn-card { border-left: 8rpx solid var(--primary); background: rgba(185,65,46,0.05); }
+.warn-title { color: var(--primary); }
+.warn-line { font-size: 25rpx; color: #7A3A2C; line-height: 1.9; }
+
+/* 岗位清单 */
+.post-card { padding: 20rpx 24rpx; }
+.post-line {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 8rpx;
+  border-bottom: 1rpx solid #F0EAE0;
+}
+.post-line:last-child { border-bottom: none; }
+.post-line.post-key { background: rgba(169,139,47,0.06); }
+.post-tag {
+  font-size: 22rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+  min-width: 130rpx;
+  text-align: center;
+}
+.post-people { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8rpx; }
+.post-person { display: flex; align-items: center; gap: 12rpx; }
+.post-person:nth-child(2) { margin-left: 4rpx; padding-left: 20rpx; position: relative; }
+.post-person:nth-child(2)::before {
+  content: ''; position: absolute; left: 0; top: -10rpx; bottom: 6rpx;
+  width: 3rpx; border-radius: 2rpx; background: #E4D9C4;
+}
+.post-name { font-size: 28rpx; font-weight: 600; color: var(--text); }
+.post-no { font-size: 22rpx; }
+.post-pts { font-size: 23rpx; color: var(--gold); flex-shrink: 0; }
+.person-x {
+  width: 40rpx; height: 40rpx; line-height: 36rpx; text-align: center;
+  border-radius: 999rpx; background: #F3E4E0; color: #93301F;
+  font-size: 22rpx; flex-shrink: 0;
+}
+.post-vacant { margin-left: auto; font-size: 23rpx; color: #6E6A5E; }
+.post-add { font-size: 22rpx; color: var(--primary); align-self: flex-start; padding: 2rpx 4rpx; }
+.post-full { font-size: 22rpx; color: #6E6A5E; align-self: flex-start; padding: 2rpx 4rpx; }
+
+/* 岗位配色（全 ASCII 类名，由 POST_CLS 映射） */
+.post-monitor { background: #FBECE9; color: #93301F; }
+.post-vice { background: #FBEEDA; color: #6B4A10; }
+.post-study { background: #DFE8F5; color: #2F5C93; }
+.post-order { background: #EDE4F3; color: #6A4A8C; }
+.post-labor { background: #E4F0E2; color: #3E7040; }
+.post-arts { background: #F5E4EE; color: #7A2F5E; }
+.post-sports { background: #E8F1DA; color: #5A7229; }
+.post-media { background: #E0EDF2; color: #366A7C; }
+.post-life { background: #DFF0EC; color: #2C6F63; }
+.post-repchn { background: #F3E7E0; color: #6E4428; }
+.post-repmath { background: #E2E6F0; color: #4A5480; }
+.post-repeng { background: #EAE6DA; color: #6E6449; }
+
+/* 未任职名单 */
+.chip-wrap { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.chip {
+  font-size: 24rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  background: #F2F2F5;
+  color: var(--text);
+}
+.chip-no { font-size: 20rpx; color: #57544C; margin-left: 6rpx; }
+.chip-idle { background: #F0F0F3; }
+
+/* 挑人 */
+.pick-bar {
+  background: #FFF6DC;
+  border: 1rpx solid #5A4712;
+  color: #5A4712;
+  font-size: 25rpx;
+  padding: 18rpx 24rpx;
+}
+.pick-post { padding: 4rpx 14rpx; border-radius: 8rpx; font-size: 23rpx; }
+.filter-btn {
+  float: right;
+  font-size: 23rpx;
+  font-weight: 400;
+  color: var(--primary);
+  padding: 0 4rpx;
+}
+.pool-chip { background: var(--wash); }
+.pool-chip.chip-cur { background: var(--primary); color: #fff; }
+.pool-chip.chip-cur .chip-no { color: rgba(255, 255, 255, 0.82); }
+.pool-chip.chip-hold { border: 1rpx solid var(--gold); }
+.chip-hold-num { font-size: 19rpx; color: var(--gold); margin-left: 6rpx; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }

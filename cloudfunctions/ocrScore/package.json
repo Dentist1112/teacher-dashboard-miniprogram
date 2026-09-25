@@ -1,0 +1,9 @@
+{
+  "name": "ocrScore",
+  "version": "1.0.0",
+  "description": "拍照识别：mode=score 录成绩 / mode=roster 导名单（云函数取图→视觉大模型→结构化）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

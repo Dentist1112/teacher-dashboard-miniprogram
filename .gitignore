@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+tools/node_modules/
+
+# local developer-tool / agent state
+project.private.config.json
+.workbuddy/
+
+# macOS and logs
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local secrets / certificates
+.env
+.env.*
+*.pem
+*.key
+
+# Python cache
+__pycache__/
+*.pyc
+
+# open-source hygiene: local cloud env + e2e screenshot artifacts
+env.local.js
+tools/shots/

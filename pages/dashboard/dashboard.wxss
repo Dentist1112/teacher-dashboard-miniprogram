@@ -1,0 +1,397 @@
+/* 流派色：概览 → 主薄荷（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #0B7A62; }
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+/* 标题+班级名竖排，右侧留给身份小卡（原来是 baseline 对齐两个 text） */
+.head-main { display: flex; flex-direction: column; gap: 4rpx; min-width: 0; }
+
+/* 身份小卡：点进设置页改头像昵称 */
+.me-chip {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-shrink: 0;
+  padding: 6rpx 18rpx 6rpx 6rpx;
+  background: var(--card);
+  border-radius: 999rpx;
+  box-shadow: var(--shadow);
+  max-width: 260rpx;
+}
+.me-chip-av { width: 52rpx; height: 52rpx; border-radius: 50%; display: block; }
+.me-chip-ph {
+  width: 52rpx; height: 52rpx; line-height: 52rpx;
+  text-align: center; font-size: 28rpx;
+  border-radius: 50%;
+  background: var(--card-2);
+}
+.me-chip-tx {
+  font-size: var(--fs-sm);
+  color: var(--text2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.center { text-align: center; padding: 32rpx 0; }
+
+/* 学生总数大卡 */
+.stat-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 8rpx solid var(--primary);
+}
+.stat-row { display: flex; align-items: baseline; gap: 16rpx; }
+.stat-label { font-size: 30rpx; color: var(--text); }
+.stat-num {
+  font-size: 64rpx;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+/* 卡片网格：移动端两列（用 flex，兼容性更好） */
+.grid {
+  display: flex;
+  gap: 24rpx;
+  flex-wrap: wrap;
+}
+.grid > .card {
+  flex: 1 1 300rpx;
+  min-width: 280rpx;
+  box-sizing: border-box;
+}
+.grid-card { margin-bottom: 0; }
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #E5E5EA;
+  margin-bottom: 16rpx;
+}
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--indigo);
+}
+
+.empty { display: block; padding: 16rpx 0; text-align: center; }
+
+.line-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 0;
+  border-bottom: 1rpx dashed #E5E5EA;
+}
+.line-item:last-child { border-bottom: 0; }
+.line-title {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 26rpx;
+  color: var(--text);
+}
+
+.badge {
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  color: #fff;
+  background: var(--bamboo);
+}
+.badge-p1 { background: var(--primary); }
+.badge-p2 { background: var(--gold); }
+.badge-p3 { background: var(--bamboo); }
+.badge-warn { background: var(--gold); }
+
+/* 奖惩行 */
+.reward-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx dashed #E5E5EA;
+}
+.reward-row:last-child { border-bottom: 0; }
+.reward-main { display: flex; flex-direction: column; gap: 4rpx; }
+
+.points {
+  font-size: 32rpx;
+  font-weight: 700;
+  border-radius: 12rpx;
+  padding: 4rpx 16rpx;
+}
+.points-add { color: var(--bamboo); background: rgba(74,124,89,0.08); }
+.points-sub { color: var(--primary); background: rgba(185,65,46,0.08); }
+
+/* flex-wrap 自带小屏单列，grid 时代那行 media 删了 */
+
+.link-more { font-size: 24rpx; color: var(--gold); }
+
+/* 常用功能宫格：视觉一律走 app.wxss 的共享实现（.gm-grid / .gm-tile / .gm-ic），
+ * 本页只留布局间距。改宫格样式请改 app.wxss，别在本页另起一套（否则两处必然漂移）。
+ * 注：.quick-btn 是纯标记类，供 e2e 从 wxml 解析入口清单，无样式。 */
+.quick-foot { margin-top: 16rpx; }
+/* 宽砖三枚（待办/全部/设置）：原 84rpx 图标 + 40rpx 内边距把 4 字标签挤成两行。
+   图标收 64rpx、内边距收 14rpx、标签 nowrap —— 实测可用宽度 ≈98rpx > 4×22=88rpx */
+.quick-foot .gm-tile.wide { padding: 20rpx 14rpx; gap: 12rpx; }
+.quick-foot .gm-ic { width: 64rpx; height: 64rpx; font-size: 32rpx; }
+.quick-foot .gm-ic-tx { font-size: 22rpx; white-space: nowrap; }
+
+/* 进行中的作业 */
+.hw-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx dashed #E5E5EA;
+}
+.hw-line:last-child { border-bottom: 0; }
+.hw-line-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12rpx; flex-wrap: wrap; }
+.hw-due { font-size: 22rpx; padding: 2rpx 12rpx; border-radius: 999rpx; }
+.hw-ok { color: var(--bamboo); background: rgba(30, 122, 71, 0.08); }
+.hw-soon { color: #5A4712; background: #FFF6DC; }
+.hw-pending { font-size: 24rpx; color: var(--primary); flex-shrink: 0; }
+.hw-total { display: block; margin-top: 14rpx; font-size: 22rpx; }
+
+/* 健康需注意卡 */
+.health-card { border-left: 8rpx solid var(--primary); background: rgba(185,65,46,0.05); }
+.health-title { color: var(--primary); }
+.health-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 12rpx 0;
+  border-bottom: 1rpx dashed #E5E5EA;
+}
+.health-line:last-child { border-bottom: 0; }
+.health-name { font-size: 27rpx; font-weight: 600; width: 130rpx; flex-shrink: 0; }
+.health-body { font-size: 25rpx; color: var(--primary); flex: 1; min-width: 0; line-height: 1.5; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+/* tab 预留：自定义底部导航悬浮，正文底部留空 */
+page .container { padding-bottom: calc(180rpx + env(safe-area-inset-bottom)); }
+
+/* ==== 奶油蘑菇主题 W2 · 会动的蘑菇小屋（2026-09-12 调研升级版） ==== */
+page {
+  background: var(--bg);
+}
+
+/* 场景插画的画框：上半天空、底部两丛草浪，吉祥物站在里面 */
+.mg-scene {
+  position: relative;
+  margin: 0 0 24rpx;
+  padding: 8rpx 0 0;
+}
+.mg-scene-img {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+}
+.mogu-img {
+  width: 120rpx; height: 148rpx;
+  flex-shrink: 0;
+}
+
+
+
+.mg-head {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 0;
+}
+.mg-head .head-main { flex: 1; min-width: 0; }
+.mg-title { font-size: 44rpx; letter-spacing: 1rpx; line-height: 1.15; }
+.mg-title text { display: inline-block; }
+.mg-c1 { color: #111827; }
+.mg-c2 { color: #111827; }
+.mg-c3 { color: #111827; }
+.mg-c4 { color: #111827; }
+.mg-sub {
+  display: inline-block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #4B5563;
+  background: #EFF1F3;
+  border-radius: 999rpx;
+  padding: 4rpx 18rpx;
+}
+.mg-head .me-chip { margin-left: auto; }
+.mogu-bubble { margin: -16rpx 0 24rpx; position: relative; z-index: 3; }
+
+/* 漂浮符号：纯装饰，远离正文区，加呼吸闪烁 */
+.sparkle {
+  display: none;
+  position: absolute;
+  font-size: 26rpx;
+  opacity: 0.7;
+  z-index: 1;
+  pointer-events: none;
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+.sp1 { right: 170rpx; top: 60rpx; }
+.sp2 { left: 46rpx; top: 170rpx; font-size: 22rpx; animation-delay: 1.1s; }
+.sp3 { right: 90rpx; top: 210rpx; font-size: 20rpx; animation-delay: 2.2s; }
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 0.85; transform: scale(1.1); }
+}
+
+/* ============================================================
+ * W4 整版重配：黏土奶油统一语言（2026-09-12）
+ * 上面的旧规则仍保留语义，这里统一覆写视觉层。
+ * ============================================================ */
+
+/* ---- 页面底：与场景横幅同色系的奶油渐变 ---- */
+page {
+  background: var(--bg);
+}
+
+/* ---- 所有卡片：奶油白 / 大圆角 / 粉雾阴影 / 无硬边框 ---- */
+.card {
+  background: #FFFFFF;
+  border-top: none !important;
+}
+
+/* ---- 卡片标题：快乐体 + 蜜桃深色，下面用淡粉虚线分隔 ---- */
+.card-title {
+  font-size: 32rpx;
+  color: var(--text);
+}
+.card-head {
+  border-bottom: 1rpx solid #EFF1F3;
+}
+.link-more { color: var(--text3); }
+
+/* ---- 学生总数：主角大卡（奶油蜜桃渐变 + 大粉数字） ---- */
+.stat-card {
+  border-left: none;
+  background: #FFFFFF;
+  padding: 30rpx 32rpx;
+  align-items: flex-start;
+}
+.stat-label { font-size: 30rpx; color: #4B5563; white-space: nowrap; flex-shrink: 0; }
+.stat-num {
+  font-size: 88rpx;
+  color: #111827;
+  margin: 0 8rpx;
+}
+.stat-unit { font-size: 28rpx; color: var(--text3); }
+.stat-badge {
+  margin-top: 10rpx;
+  align-self: flex-start;
+  font-size: 20rpx;
+  white-space: nowrap;
+  color: #4B5563;
+  background: #F1F3F5;
+  border-radius: 999rpx;
+  padding: 6rpx 20rpx;
+}
+
+/* ---- 宫格：砖体更奶油，图标砖更大，标签更柔 ---- */
+.gm-tile {
+  background: #FFFFFF;
+}
+.gm-ic-tx { color: #4B5563; font-size: 23rpx; }
+
+/* ---- 列表分隔线：淡粉虚线 ---- */
+.line-item, .hw-line, .reward-row, .health-line {
+  border-bottom-color: #EFF1F3 !important;
+}
+.muted { color: #4B5563; }
+
+/* ---- 健康卡：警示珊瑚软化成蜜桃粉，不再和整体打架 ---- */
+.health-card {
+  border-left: none;
+  background: #FDF8F1;
+  border: 1rpx solid #F0E3CE;
+}
+.health-title { color: #B04A28; }
+.health-name { color: #5B4650; }
+.health-body { color: #9A5234; }
+
+/* ---- 奖惩积分胶囊 ---- */
+.points-add { color: #1F7A43; background: rgba(46, 139, 87, 0.08); }
+.points-sub { color: #C92A5D; background: rgba(201, 42, 93, 0.07); }
+
+/* ---- 气泡圆角与卡片统一 ---- */
+.mogu-bubble { border-radius: 32rpx; }
+
+/* ---- 徽标胶囊软化 ---- */
+.badge { border-radius: 999rpx; }
+
+/* 今日待办卡 */
+.todo-card { }
+.todo-line {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #EFF1F3;
+}
+.todo-line:last-child { border-bottom: none; }
+.todo-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #B5520A;
+  flex-shrink: 0;
+}
+.todo-dot.is-overdue { background: #B9412E; }
+.todo-line-tx {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.todo-line-tx.is-overdue { color: #B9412E; }
+.todo-line-date {
+  flex-shrink: 0;
+  font-size: 24rpx;
+}
+.todo-line-date.d-today { color: #B5520A; font-weight: 600; }
+.todo-line-date.d-overdue { color: #B9412E; }
+
+/* ============ v0.9.5 一键日报 ============ */
+.stat-badge-row { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; margin-top: 10rpx; }
+.stat-badge-row .stat-badge { margin-top: 0; }
+.report-btn {
+  font-size: 23rpx;
+  color: #fff;
+  background: var(--primary);
+  border-radius: 999rpx;
+  padding: 8rpx 22rpx;
+  flex-shrink: 0;
+}
+.report-btn-hover { background: var(--primary-d); }

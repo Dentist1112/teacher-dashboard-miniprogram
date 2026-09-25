@@ -1,0 +1,52 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，待办无法保存。配置真实 AppID + 云环境后自动生效。
+  </view>
+
+  <!-- 一步输入：想法随手记，不用再开弹层（输入条在文档流顶部，键盘弹起时微信自动上推，按钮始终在输入框旁边） -->
+  <view class="card add-card">
+    <view class="add-row">
+      <input class="todo-input" type="text" value="{{draft}}" placeholder="记一件要做的事…"
+             data-field="draft" bindinput="onInput" bindconfirm="onAdd"
+             confirm-type="done" maxlength="60"/>
+      <view class="add-btn {{saving ? 'disabled' : ''}}" bindtap="onAdd">{{saving ? '添加中' : '添加'}}</view>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dueDate}}" bindchange="onDateChange">
+        <view class="date-chip">{{dueDate ? '📅 ' + dueDate : '📅 无日期（可选）'}}</view>
+      </picker>
+      <view wx:if="{{dueDate}}" class="date-clear" bindtap="onClearDate">清除日期</view>
+    </view>
+  </view>
+
+  <view class="card header">
+    <view class="header-title">
+      <view class="title f-happy">待办清单</view>
+      <view class="muted">{{openCount > 0 ? '还有 ' + openCount + ' 件事等着你' : '今天的事都做完啦 🍄'}}</view>
+    </view>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:else>
+    <view class="grp" wx:for="{{groups}}" wx:key="key">
+      <view class="grp-head">
+        <text class="grp-dot grp-dot-{{item.key}}"></text>
+        <text class="grp-title f-happy">{{item.label}}</text>
+        <text class="grp-count">{{item.items.length}}</text>
+      </view>
+      <view class="card todo-item" wx:for="{{item.items}}" wx:for-item="t" wx:key="_id">
+        <view class="check {{t.done ? 'checked' : ''}} ck-{{t.cls}}" data-id="{{t._id}}" catchtap="onToggle">{{t.done ? '✓' : ''}}</view>
+        <view class="todo-main" data-id="{{t._id}}" catchtap="onToggle">
+          <view class="todo-title {{t.done ? 'done' : ''}}">{{t.title}}</view>
+          <view wx:if="{{t.dueDate}}" class="todo-date d-{{t.cls}}">{{t.dueLabel}}</view>
+        </view>
+        <view class="todo-del" data-id="{{t._id}}" catchtap="onDelete">删除</view>
+      </view>
+    </view>
+
+    <template is="gmEmpty" wx:if="{{groups.length === 0}}" data="{{ show: true, title: '还没有待办', desc: '想到什么，先在上面记下来' }}"/>
+  </block>
+</view>

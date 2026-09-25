@@ -1,0 +1,55 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，名单为空且无法保存考勤。配置真实 AppID + 云环境后自动生效。
+  </view>
+  <view class="card header">
+    <view class="header-info">
+      <view class="title f-happy">考勤登记</view>
+      <view class="muted">{{classTitle}}</view>
+      <picker class="date-picker" mode="date" value="{{date}}" bindchange="onDateChange">
+        <view class="date-text">📅 {{date}}</view>
+      </picker>
+    </view>
+    <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="onSave">{{saving ? '保存中…' : '保存'}}</view>
+  </view>
+
+  <!-- 大多数学生正常：一键全员标正常，只改少数迟到/请假 -->
+  <view class="card quick-card">
+    <view class="quick-all" bindtap="onMarkAllNormal">✅ 一键全员正常</view>
+    <text class="muted quick-pending">{{pendingCount > 0 ? '还有 ' + pendingCount + ' 人未标记' : '全班已标记'}}</text>
+  </view>
+
+  <!-- 同人同日重复记录：显示已按最新一条为准，并给一键清理 -->
+  <view wx:if="{{dupCount}}" class="card dup-card">
+    <view class="dup-text">发现 {{dupCount}} 条重复登记，已按最新一条显示</view>
+    <view class="dup-btn" bindtap="onCleanDup">清理重复</view>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:elif="{{students.length}}">
+    <view class="card list-card">
+      <view class="stu-row {{item.status === '请假' ? 'row-leave' : ''}}" wx:for="{{students}}" wx:key="_id">
+        <view class="stu-info">
+          <view class="row-no">{{item.studentNo}}</view>
+          <view class="stu-name-wrap">
+            <view class="row-name">{{item.name}}</view>
+            <view wx:if="{{item.status === '请假'}}" class="row-reason">📝 {{item.reason || '（未填事由）'}}<text wx:if="{{item.legacy}}" class="legacy-tag">历史缺勤</text></view>
+            <view wx:elif="{{!item.status}}" class="untag">未标记</view>
+          </view>
+        </view>
+        <view class="status-btns">
+          <view wx:for="{{statuses}}" wx:for-item="st" wx:key="*this"
+                class="status-btn st-{{index}} {{item.status === st ? 'active' : ''}}"
+                data-id="{{item._id}}" data-status="{{st}}"
+                bindtap="onStatusTap">{{st}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="att-tip muted">默认全班正常，只需点改少数迟到/请假；点「请假」会要求填写事由。</view>
+  </block>
+
+  <template is="gmEmpty" wx:else data="{{ show: true, title: '还没有学生', desc: '请先在「名单」页添加学生' }}"/>
+</view>

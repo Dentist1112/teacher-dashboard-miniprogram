@@ -1,0 +1,138 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，名单为空且无法保存。配置真实 AppID + 云环境后自动生效。
+  </view>
+  <view class="card header">
+    <view class="header-title">
+      <view class="title">学生名单</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="head-btns">
+      <!-- .roster-ai / .roster-add 是纯标记类（无样式），供 e2e 精确定位。
+           同页出现多个 .add-btn 时，$('.add-btn') 只取第一个 → 会点错按钮
+           （台账 #17 同类事故：概览页多个入口共用 .quick-btn）。不要删这两个类名。 -->
+      <view wx:if="{{!batchMode}}" class="add-btn ai-btn roster-ai" bindtap="onAiPhoto">📷 拍照导入</view>
+      <view wx:if="{{!batchMode}}" class="add-btn roster-paste" bindtap="onPasteTap">📋 粘贴名单</view>
+      <view class="add-btn roster-batch {{batchMode ? 'ai-btn-on' : ''}}" bindtap="onToggleBatch">{{batchMode ? '完成' : '批量管理'}}</view>
+      <view wx:if="{{!batchMode}}" class="add-btn roster-add" bindtap="onAdd">+ 添加</view>
+    </view>
+  </view>
+
+  <!-- 批量工具条：全选 / 删所选 / 清空全班 -->
+  <view wx:if="{{batchMode}}" class="card batch-bar">
+    <view class="batch-left">
+      <view class="batch-chip" bindtap="onSelectAll">全选</view>
+      <view class="batch-chip" bindtap="onSelectNone">取消全选</view>
+      <text class="muted batch-count">已选 {{selectedCount}} / {{students.length}}</text>
+    </view>
+    <view class="batch-right">
+      <view class="batch-btn danger {{selectedCount ? '' : 'disabled'}}" bindtap="onBatchDelete">删除所选</view>
+      <view class="batch-btn danger-outline" bindtap="onClearAll">清空全班</view>
+    </view>
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:elif="{{students.length}}">
+    <!-- 不等长、要横向比对/搜索 → 列表（不是宫格）。全班合成一张卡片，避免 30 张卡各自为政 -->
+    <view class="card">
+      <view class="cl {{batchMode ? 'cl-batch' : ''}} {{selectedMap[item._id] ? 'cl-on' : ''}}" wx:for="{{students}}" wx:key="_id">
+        <view wx:if="{{batchMode}}" class="cl-check {{selectedMap[item._id] ? 'check-on' : ''}}"
+              data-id="{{item._id}}" catchtap="onToggleSelect">{{selectedMap[item._id] ? '✓' : ''}}</view>
+        <view class="cl-av {{item.gender === '女' ? 'a2' : 'a1'}}"
+              data-id="{{item._id}}" bindtap="onRowTap">{{item.initial}}</view>
+        <view class="cl-main" data-id="{{item._id}}" bindtap="onRowTap">
+          <view class="cl-t">{{item.name}}</view>
+          <view class="cl-s">学号 {{item.studentNo}} · {{item.gender}}</view>
+        </view>
+        <view wx:if="{{!batchMode}}" class="cl-end">
+          <view class="act profile" data-id="{{item._id}}" catchtap="onProfile">档案</view>
+          <view class="act edit" data-id="{{item._id}}" catchtap="onEdit">编辑</view>
+          <view class="act del" data-id="{{item._id}}" catchtap="onDelete">删除</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <template is="gmEmpty" wx:else data="{{ show: true, title: '还没有学生', desc: '点右上角 + 添加第一位学生' }}"/>
+</view>
+
+<!-- 拍照导名单确认表：AI 结果必须经这一步人工核对才写库 -->
+<view wx:if="{{aiShow}}" class="mask" catchtap="onAiCancel">
+  <view class="form-sheet ai-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">核对识别结果</view>
+    <view class="ai-tip">AI 只认姓名，学号按起始号自动排。名字点一下可以改，认错的点「跳过」。确认无误再导入。</view>
+
+    <view class="field">
+      <view class="field-label">起始学号</view>
+      <input class="field-input" type="number" value="{{aiStartNo}}"
+             bindinput="onAiStartNoInput" placeholder="如 1" />
+    </view>
+
+    <view class="ai-sum">
+      <text class="ai-sum-ok">将导入 {{aiWillImport}} 人</text>
+      <text wx:if="{{aiConflicts}}" class="ai-sum-bad">· {{aiConflicts}} 行学号冲突</text>
+    </view>
+
+    <scroll-view class="ai-list" scroll-y>
+      <view class="ai-row {{item.skip ? 'ai-skip' : ''}}" wx:for="{{aiRows}}" wx:key="key">
+        <view class="ai-no">{{item.skip ? '—' : item.no}}</view>
+        <input class="ai-name" type="text" value="{{item.name}}"
+               data-i="{{index}}" bindinput="onAiNameInput" placeholder="姓名" />
+        <view wx:if="{{item.dup}}" class="ai-dup">{{item.dup}}</view>
+        <view class="ai-act" data-i="{{index}}" bindtap="onAiToggleSkip">{{item.skip ? '恢复' : '跳过'}}</view>
+      </view>
+    </scroll-view>
+
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onAiCancel">取消</view>
+      <view class="btn-save {{aiImporting ? 'disabled' : ''}}" bindtap="onAiImport">{{aiImporting ? '导入中…' : '导入'}}</view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showForm}}" class="mask" catchtap="onFormCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">{{isEdit ? '编辑学生' : '添加学生'}}</view>
+
+    <view class="field">
+      <view class="field-label">学号</view>
+      <input class="field-input" type="text" value="{{form.studentNo}}"
+             data-field="studentNo" bindinput="onInput" placeholder="如 01" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">姓名</view>
+      <input class="field-input" type="text" value="{{form.name}}"
+             data-field="name" bindinput="onInput" placeholder="如 张三" />
+    </view>
+
+    <view class="field">
+      <view class="field-label">性别</view>
+      <picker class="field-picker" range="{{genders}}" value="{{genderIndex}}" bindchange="onGenderChange">
+        <view class="picker-text">{{genders[genderIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onFormCancel">取消</view>
+      <view class="btn-save {{saving ? 'disabled' : ''}}" bindtap="onFormSave">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+  </view>
+</view>
+
+<!-- 粘贴名单：零密钥兜底。解析出姓名后走和拍照同一张确认表（学号本地分配 + 查重） -->
+<view wx:if="{{pasteShow}}" class="mask" catchtap="onPasteCancel">
+  <view class="form-sheet" catchtap="noop" style="{{kbH ? 'margin-bottom:' + kbH + 'px;max-height:58vh' : ''}}">
+    <view class="form-title">粘贴名单</view>
+    <view class="muted ai-tip">一行一个姓名即可。也可以直接粘 Excel / 微信群名单整行（会自动跳过学号、性别、电话）。</view>
+    <textarea class="paste-area" value="{{pasteText}}" bindinput="onPasteInput"
+              placeholder="张三&#10;李四&#10;王五" maxlength="2000" auto-height />
+    <view class="form-actions">
+      <view class="btn-cancel" bindtap="onPasteCancel">取消</view>
+      <view class="btn-save" bindtap="onPasteConfirm">下一步：核对</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,27 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view class="all-head">
+    <view class="title">全部功能</view>
+    <view class="muted">所有功能都在这里，点开即用</view>
+  </view>
+
+  <view class="grp" wx:for="{{groups}}" wx:key="group" wx:for-item="grp">
+    <template is="gmSectionTitle" data="{{ label: grp.group }}"/>
+    <view class="gm-grid">
+      <view
+        wx:for="{{grp.items}}"
+        wx:key="path"
+        class="gm-tile tile"
+        data-path="{{item.path}}"
+        data-tab="{{item.tab}}"
+        bindtap="go"
+        hover-class="gm-tile-hover"
+        hover-stay-time="80"
+      >
+        <view class="gm-ic {{grp.tone}}">{{item.icon}}</view>
+        <view class="gm-ic-tx">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,10 @@
+<view class="container">
+  <view class="card">
+    <view class="title f-happy">蘑菇老师</view>
+    <view class="muted">{{classTitle}}</view>
+  </view>
+  <view class="card">
+    <view>OPENID：{{openid}}</view>
+    <view class="muted">{{envOk ? '已登录，可开始开发' : '请先部署 login 云函数并替换 app.js 里的 envId'}}</view>
+  </view>
+</view>

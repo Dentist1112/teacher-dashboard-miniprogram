@@ -1,0 +1,79 @@
+/* 数据分析页：沿用奶油蘑菇体系，分析页用薄荷青作为 accent */
+page { --accent: #0E6B78; }
+.container { padding: 24rpx 24rpx calc(80rpx + env(safe-area-inset-bottom)); }
+
+.title { position: relative; padding-left: 20rpx; }
+.title::before {
+  content: ''; position: absolute; left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx; border-radius: 4rpx; background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); margin-bottom: 20rpx; }
+
+/* 周期分段控件 */
+.seg {
+  display: flex;
+  background: #fff;
+  border-radius: 999rpx;
+  padding: 8rpx;
+  margin: 8rpx 0 12rpx;
+  box-shadow: 0 4rpx 14rpx rgba(11,122,98,0.08);
+}
+.seg-item {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: var(--text);
+  background: #fff;
+  padding: 18rpx 0;
+  border-radius: 999rpx;
+  transition: all 0.15s;
+}
+.seg-item.on {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4rpx 10rpx rgba(11,122,98,0.25);
+}
+.range-text { font-size: 24rpx; padding: 0 8rpx 12rpx; }
+
+/* KPI 小格 */
+.kpi-row { display: flex; gap: 14rpx; margin-top: 12rpx; }
+.kpi {
+  flex: 1;
+  background: var(--card-2, #F6F3EA);
+  border-radius: 18rpx;
+  padding: 18rpx 6rpx;
+  display: flex; flex-direction: column; align-items: center; gap: 6rpx;
+}
+.kpi-n { font-size: 38rpx; font-weight: 800; color: var(--text); line-height: 1; }
+.kpi.ok .kpi-n { color: var(--primary); }
+.kpi.warn .kpi-n { color: #A84E08; }
+.kpi.pink .kpi-n { color: var(--pink); }
+.kpi .muted { font-size: 20rpx; }
+
+/* 异常名单 */
+.ab-list { margin-top: 16rpx; border-top: 1rpx solid var(--sep); }
+.ab-item {
+  display: flex; align-items: center; gap: 14rpx;
+  padding: 14rpx 0; border-bottom: 1rpx solid var(--sep);
+}
+.ab-name { font-size: 28rpx; color: var(--text); min-width: 120rpx; }
+.ab-badge {
+  font-size: 22rpx; border-radius: 999rpx; padding: 6rpx 18rpx;
+  color: #fff; line-height: 1.3;
+}
+.ab-badge.late { background: #A84E08; }
+.ab-badge.leave { background: var(--pink); }
+.ab-reason { font-size: 24rpx; flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 成绩各科条 */
+.overall { font-size: 26rpx; margin: 12rpx 0; color: var(--text); }
+.overall-n { font-size: 34rpx; font-weight: 800; color: var(--primary); }
+.subj-row { display: flex; align-items: center; gap: 14rpx; padding: 10rpx 0; }
+.subj-name { width: 90rpx; font-size: 26rpx; color: var(--text); flex-shrink: 0; }
+.subj-bar { flex: 1; height: 16rpx; background: #EFEAD9; border-radius: 999rpx; overflow: hidden; min-width: 60rpx; }
+.subj-in { height: 100%; background: var(--primary); border-radius: 999rpx; min-width: 4rpx; }
+.subj-pct { width: 84rpx; text-align: right; font-size: 24rpx; flex-shrink: 0; }
+.subj-n { width: 60rpx; text-align: right; font-size: 22rpx; flex-shrink: 0; }
+
+.foot-note { font-size: 21rpx; padding-top: 12rpx; }

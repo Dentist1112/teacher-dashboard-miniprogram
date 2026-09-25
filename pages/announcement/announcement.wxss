@@ -1,0 +1,199 @@
+/* 流派色：announcement → 朱红（四色体系内，vs和纸底对比度 ≥4.5）*/
+page { --accent: #17749B; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-title { flex: 1; min-width: 0; }
+.add-btn {
+  background: var(--primary);
+  color: #fff;
+  font-size: 26rpx;
+  padding: 16rpx 28rpx;
+  border-radius: 999rpx;
+  line-height: 1;
+  white-space: nowrap;
+}
+.center-tip { text-align: center; padding: 40rpx 0; }
+
+.notice {
+  padding: 24rpx;
+}
+.notice-head {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.badge {
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+.badge-p1 { background: rgba(185,65,46,0.09); color: var(--primary); }
+.badge-p2 { background: #FFF6DC; color: #5A4712; }
+.badge-p3 { background: rgba(136,136,136,0.09); color: #55555C; }
+.notice-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.act.del {
+  font-size: 24rpx;
+  color: var(--primary);
+  background: rgba(185,65,46,0.08);
+  padding: 12rpx 20rpx;
+  border-radius: 10rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.notice-content {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: #555;
+  line-height: 1.6;
+  word-break: break-word;
+}
+/* 默认截断到 2 行（L4 规则）；展开后由 expandedId 控制去掉 .clamp → 撑开 */
+.notice-content.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.notice-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  gap: 12rpx;
+}
+.expand-hint {
+  color: var(--primary);
+  font-size: 24rpx;
+  flex-shrink: 0;
+}
+
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.form-sheet {
+  width: 100%;
+  max-width: 680rpx;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  /* 表单比屏幕高时必须能滚，否则底部「保存/发布」按钮被顶出可视区（用户实测反馈：通知加不了）*/
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.form-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+.field {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+  min-height: 88rpx;
+  box-sizing: border-box;
+}
+.field-col {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.field-label {
+  width: 120rpx;
+  color: var(--text);
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+.field-col .field-label {
+  width: auto;
+  margin-bottom: 12rpx;
+}
+.field-input { flex: 1; font-size: 30rpx; color: var(--text); }
+.field-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  font-size: 30rpx;
+  color: var(--text);
+  box-sizing: border-box;
+}
+.field-picker { flex: 1; }
+.picker-text { font-size: 30rpx; color: var(--text); }
+
+.form-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 32rpx;
+}
+.btn-cancel {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 999rpx;
+  background: var(--wash);
+  color: var(--text2);
+  font-size: 30rpx;
+}
+.btn-save {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 999rpx;
+  background: var(--primary);
+  color: #fff;
+  font-size: 30rpx;
+}
+.btn-save.disabled { opacity: 0.6; }
+
+/* ==== 每页专属特色（accent）的可见落地 ====
+ * 只用在「不压正文」的位置：标题前竖条、卡片顶线、激活态。
+ * 不做大面积深色块 —— 那会把字压到看不清（contrast.py 会直接报红）。 */
+.title {
+  position: relative;
+  padding-left: 20rpx;
+}
+.title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8rpx; bottom: 8rpx;
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: var(--accent);
+}
+.card { border-top: 2rpx solid var(--accent); }
+.btn { background: var(--accent); }
+
+/* tab 预留：自定义底部导航悬浮，正文底部留空 */
+page .container { padding-bottom: calc(180rpx + env(safe-area-inset-bottom)); }
+
+/* 弹层表单可滚动后，把操作条固定在弹层底部：老师滚到哪都能看到「保存/发布」
+   （用户实测反馈 2026-09-06：新加通知时只能打字，找不到保存按钮）*/
+.form-sheet .form-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-bottom: 4rpx;
+  z-index: 2;
+}

@@ -1,0 +1,17 @@
+<view class="tb-wrap {{hidden ? 'tb-hidden' : ''}}">
+  <view class="tb-bar">
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="tb-item {{selected === index ? 'on' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTap"
+      hover-class="tb-hover"
+      hover-stay-time="80"
+    >
+      <view class="tb-icon">{{item.icon}}</view>
+      <view class="tb-text">{{item.text}}</view>
+      <view wx:if="{{selected === index}}" class="tb-dot"></view>
+    </view>
+  </view>
+</view>

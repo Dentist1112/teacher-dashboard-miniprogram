@@ -1,0 +1,101 @@
+<import src="/templates/gm.wxml"/>
+
+<view class="container">
+  <view wx:if="{{!cloudReady}}" class="demo-banner">
+    <text class="demo-strong">演示模式：</text>未连接云数据库，无法保存。
+  </view>
+
+  <view class="card header">
+    <view class="header-title">
+      <view class="title">座位表</view>
+      <view class="muted">{{classTitle}}</view>
+    </view>
+    <view class="save-btn {{dirtyFlag ? '' : 'save-idle'}}" bindtap="onSave">
+      {{saving ? '保存中…' : (dirtyFlag ? '保存' : '已同步')}}
+    </view>
+  </view>
+
+  <view class="card summary">
+    <view class="sum-item">
+      <text class="sum-num">{{overview.total}}</text>
+      <text class="muted">在册</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num sum-ok">{{overview.seated}}</text>
+      <text class="muted">已排座</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num sum-miss">{{overview.unseated}}</text>
+      <text class="muted">未排座</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num">{{rows}}×{{cols}}</text>
+      <text class="muted">行×列</text>
+    </view>
+  </view>
+
+  <view class="card tool-card">
+    <!-- 教室行×列可自定义：不同教室排布不同 -->
+    <view class="dim-line">
+      <text class="tool-lbl">行数（前后排）</text>
+      <view class="stepper">
+        <view class="stp-btn" data-d="-1" bindtap="onRowsStep">－</view>
+        <text class="stp-num">{{rows}}</text>
+        <view class="stp-btn" data-d="1" bindtap="onRowsStep">＋</view>
+      </view>
+    </view>
+    <view class="dim-line">
+      <text class="tool-lbl">列数（每排）</text>
+      <view class="stepper">
+        <view class="stp-btn" data-d="-1" bindtap="onColsStep">－</view>
+        <text class="stp-num">{{cols}}</text>
+        <view class="stp-btn" data-d="1" bindtap="onColsStep">＋</view>
+      </view>
+    </view>
+    <view class="cap-line">共 {{rows}}×{{cols}} = {{overview.seatCount}} 座 · 全班 {{overview.total}} 人</view>
+    <view wx:if="{{capWarn}}" class="cap-warn">⚠ 座位比人数少 {{overview.total - overview.seatCount}} 个，多出的学生在未排座名单里，请加行或加列。</view>
+    <view class="tool-btns">
+      <view class="tool-btn" bindtap="onFillByNo">按学号铺满</view>
+      <view class="tool-btn" bindtap="onShuffle">随机排座</view>
+      <view class="tool-btn tool-danger" bindtap="onClearAll">全部清空</view>
+    </view>
+    <view class="tip">
+      点两个座位互换；点未排座学生再点空位落座；长按座位移出。行列设置自动保存，座位改动记得点右上「保存」。
+    </view>
+  </view>
+
+  <view wx:if="{{pickedId}}" class="card picked-bar">
+    已挑中 <text class="picked-name">{{pickedName}}</text>，点一个座位安排他/她坐下。
+  </view>
+
+  <template is="gmSkeleton" wx:if="{{loading}}" data="{{ loading: loading, lines: 4 }}"/>
+
+  <block wx:else>
+    <view class="card board">
+      <view class="podium">讲台</view>
+      <view class="seat-row" wx:for="{{grid}}" wx:for-item="line" wx:for-index="ri" wx:key="ri">
+        <view class="seat {{cell.empty ? 'seat-empty' : ''}} {{cell.sel ? 'seat-sel' : ''}} seat-{{cell.gcls}}"
+              wx:for="{{line}}" wx:for-item="cell" wx:key="key"
+              data-r="{{cell.row}}" data-c="{{cell.col}}"
+              bindtap="onTapCell" bindlongpress="onClearCell">
+          <text wx:if="{{cell.empty}}" class="seat-blank">空</text>
+          <block wx:else>
+            <text class="seat-name">{{cell.name}}</text>
+            <text class="seat-no">{{cell.studentNo}}</text>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">未排座（{{unseated.length}}）</view>
+      <view wx:if="{{unseated.length === 0}}" class="muted">全班都已排座。</view>
+      <view wx:else class="chip-wrap">
+        <view class="chip {{pickedId === item._id ? 'chip-on' : ''}} chip-{{item.gcls}}"
+              wx:for="{{unseated}}" wx:key="_id" data-id="{{item._id}}" bindtap="onPickUnseated">
+          {{item.name}} <text class="chip-no">{{item.studentNo}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

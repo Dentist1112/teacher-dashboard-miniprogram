@@ -1,0 +1,89 @@
+<view class="container">
+  <view class="card">
+    <view class="title">班级信息</view>
+    <view class="muted">所有页面顶部显示的学校/班级名来自这里</view>
+  </view>
+
+  <view class="card form">
+    <view class="field">
+      <view class="field-label">学校</view>
+      <input class="field-input" type="text" value="{{form.school}}" data-field="school"
+             bindinput="onInput" placeholder="如 XX中学" maxlength="30" />
+    </view>
+    <view class="field">
+      <view class="field-label">班级</view>
+      <input class="field-input" type="text" value="{{form.className}}" data-field="className"
+             bindinput="onInput" placeholder="如 初三(1)班" maxlength="20" />
+    </view>
+    <view class="field">
+      <view class="field-label">年级</view>
+      <input class="field-input" type="text" value="{{form.grade}}" data-field="grade"
+             bindinput="onInput" placeholder="如 初三" maxlength="10" />
+    </view>
+    <view class="field">
+      <view class="field-label">学期</view>
+      <input class="field-input" type="text" value="{{form.semester}}" data-field="semester"
+             bindinput="onInput" placeholder="如 2026学年上" maxlength="20" />
+    </view>
+    <view class="field">
+      <view class="field-label">班主任</view>
+      <input class="field-input" type="text" value="{{form.teacher}}" data-field="teacher"
+             bindinput="onInput" placeholder="如 胡老师" maxlength="15" />
+    </view>
+    <view class="btn-save {{saving ? 'disabled' : ''}}" bindtap="onSave">{{saving ? '保存中…' : '保存'}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">数据概况</view>
+    <view class="stat-line"><text>学生</text><text class="stat-v">{{stats.students}} 人</text></view>
+    <view class="stat-line"><text>考勤记录</text><text class="stat-v">{{stats.attendance}} 条</text></view>
+    <view class="stat-line"><text>通知</text><text class="stat-v">{{stats.announcements}} 条</text></view>
+    <view class="stat-line"><text>奖惩</text><text class="stat-v">{{stats.rewards}} 条</text></view>
+    <view class="muted refresh-tip" bindtap="loadStats">点此刷新</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">身份</view>
+    <view class="me-row">
+      <button class="me-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{me.avatar}}" class="me-avatar" src="{{me.avatar}}" mode="aspectFill"/>
+        <view wx:else class="me-avatar-ph">＋</view>
+      </button>
+      <view class="me-info">
+        <input class="me-nick" type="nickname" value="{{me.nickName}}" bindinput="onNickInput"
+               bindblur="onNickInput" placeholder="点这里可用微信昵称" maxlength="20" />
+        <text class="tiny">点头像可换，点昵称可选「使用微信昵称」</text>
+      </view>
+    </view>
+    <view class="me-actions">
+      <view class="btn-save me-save {{meSaving ? 'disabled' : ''}}" bindtap="onSaveMe">{{meSaving ? '保存中…' : '保存身份'}}</view>
+      <view class="link-logout" bindtap="onLogout">退出登录</view>
+    </view>
+    <view class="muted openid-text">OPENID：{{openid}}</view>
+    <view class="muted">同一个微信号在手机和电脑登录，看到的是同一份数据。</view>
+  </view>
+
+  <!-- AI 识别（拍照录成绩）密钥：只存你自己的云数据库，不发给我、不进代码 -->
+  <view class="card form ai-key-card">
+    <view class="card-title">AI 识别密钥（拍照录成绩）</view>
+    <view class="muted ai-key-tip">粘贴视觉大模型 API Key 即可开启拍照自动识别。密钥只存在你自己的云数据库里，不上传给我、不写进代码。</view>
+    <view class="field">
+      <view class="field-label">密钥</view>
+      <input class="field-input" type="{{aiPwd ? 'text' : 'password'}}" value="{{ai.key}}" data-field="key"
+             bindinput="onAiInput" placeholder="粘贴 API Key" maxlength="200" />
+      <text class="pick-edit" bindtap="toggleAiPwd">{{aiPwd ? '隐藏' : '显示'}}</text>
+    </view>
+    <view class="field">
+      <view class="field-label">接口(可选)</view>
+      <input class="field-input" type="text" value="{{ai.baseUrl}}" data-field="baseUrl"
+             bindinput="onAiInput" placeholder="默认 混元：https://api.hunyuan.cloud.tencent.com/v1" maxlength="200" />
+    </view>
+    <view class="field">
+      <view class="field-label">模型(可选)</view>
+      <input class="field-input" type="text" value="{{ai.model}}" data-field="model"
+             bindinput="onAiInput" placeholder="默认 hunyuan-vision" maxlength="60" />
+    </view>
+    <view class="ai-status {{aiSaved ? 'ok' : 'no'}}">{{aiSaved ? '● 已配置，拍照可自动识别' : '○ 未配置，拍照将引导手动录入'}}</view>
+    <view class="btn-save {{aiSaving ? 'disabled' : ''}}" bindtap="onAiSave">{{aiSaving ? '保存中…' : '保存密钥'}}</view>
+  </view>
+</view>
